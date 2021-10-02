@@ -19,5 +19,4 @@ const getTime = () =>
     });
   });
 
-//postgres://pajdauwo:EnuOogaf3i5XhIOrDPHbYWtZpiSZlBol@satao.db.elephantsql.com/pajdauwo
 module.exports = { getTime };
