@@ -2,8 +2,7 @@ var pg = require("pg");
 //or native libpq bindings
 //var pg = require('pg').native
 
-var conString =
-  "postgres://pajdauwo:EnuOogaf3i5XhIOrDPHbYWtZpiSZlBol@satao.db.elephantsql.com/pajdauwo"; //Can be found in the Details page
+var conString = process.env.DB_URI; //Can be found in the Details page
 var client = new pg.Client(conString);
 const getTime = () =>
   client.connect(function (err) {
