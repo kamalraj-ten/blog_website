@@ -27,4 +27,8 @@ app.get("/database/sign_in", async (req, res) => {
   else res.send("not signed in");
 });
 app.get("/database/sign_up", (req, res) => res.send("sign_up"));
-app.get("/database/get_user_detail", (req, res) => res.send("get user detail"));
+app.get("/database/get_user_detail", async (req, res) => {
+  const user = await Database.getUserDetail(req.body["email_id"]);
+  //console.log(user);
+  res.send(user);
+});
