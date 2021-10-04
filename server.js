@@ -32,3 +32,17 @@ app.get("/database/get_user_detail", async (req, res) => {
   //console.log(user);
   res.send(user);
 });
+
+//blog related api
+app.get("/blog/get_blog_by_id", async (req, res) => {
+  const blog = await Database.getBlogById(req.body["blog_id"]);
+  res.send(blog);
+});
+app.get("/blog/get_blog_by_title", async (req, res) => {
+  const blogs = await Database.getBlogByTitle(req.body["title"]);
+  res.send(blogs);
+});
+app.get("/blog/get_blog_by_email", async (req, res) => {
+  const blogs = await Database.getBlogByEmail(req.body["email_id"]);
+  res.send(blogs);
+});
