@@ -5,6 +5,29 @@ const Database = require("./database");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 
+const categories = [
+  "Brands",
+  "C",
+  "C++",
+  "Countries",
+  "Entertainment",
+  "Flutter",
+  "Government",
+  "HBD",
+  "Law",
+  "Locations",
+  "Lifestyle",
+  "Medicine",
+  "Memes",
+  "Music",
+  "Politics",
+  "Social services",
+  "Sports",
+  "Technology",
+  "Travel",
+  "World News",
+];
+
 Database.getTime();
 
 const app = express();
@@ -12,7 +35,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // api's
@@ -27,7 +50,44 @@ app.get("/database/sign_in", async (req, res) => {
   if (validity) res.send("signed in");
   else res.send("not signed in");
 });
-app.get("/database/sign_up", (req, res) => res.send("sign_up"));
+app.get("/database/sign_up", async (req, res) => {
+  // dob - javascript Date object
+  // interests - array of interests
+  // gender - M, F, T
+  const {
+    email_id,
+    username,
+    name,
+    dob,
+    gender,
+    country,
+    interests,
+    password,
+  } = req.body;
+  var interestVector = "";
+  //changing interests to vector of 0 and 1
+  interests.sort();
+  var i = 0;
+  var j = 0;
+  for (; i < categories.length; ++i) {
+    if (categories[i] === interests[j]) {
+      interestVector += 1;
+      ++j;
+    } else interestVector += 0;
+  }
+
+  const response = await Database.signUp(
+    email_id,
+    username,
+    name,
+    dob,
+    gender,
+    country,
+    interestVector,
+    password
+  );
+  res.send(response);
+});
 app.get("/database/get_user_detail", async (req, res) => {
   const user = await Database.getUserDetail(req.body["email_id"]);
   //console.log(user);
@@ -48,24 +108,26 @@ app.get("/blog/get_blog_by_email", async (req, res) => {
   res.send(blogs);
 });
 
-
 //following functions are used to handle html handle page requests
 
 //returns the index.html page
-app.get("/login",async(req,res)=>{
-  fs.readFile(path.join(__dirname,'public','index.html'),'utf8',(err,data)=>{
-    if(err){
-      if(err == 'ENOENT'){
-        res.writeHead(404);
-        res.end("PAGE NOT FOUND");
-      }else{
-        res.writeHead(500);
-        res.end("server error");
+app.get("/login", async (req, res) => {
+  fs.readFile(
+    path.join(__dirname, "public", "index.html"),
+    "utf8",
+    (err, data) => {
+      if (err) {
+        if (err == "ENOENT") {
+          res.writeHead(404);
+          res.end("PAGE NOT FOUND");
+        } else {
+          res.writeHead(500);
+          res.end("server error");
+        }
+      } else {
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end(data);
       }
     }
-    else{
-      res.writeHead(200,{'Content-Type':'text/html'});
-      res.end(data);
-    }
-  });
+  );
 });

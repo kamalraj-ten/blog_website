@@ -1,19 +1,13 @@
 var pg = require("pg");
 
-//var conString = process.env.DB_URI; //Can be found in the Details page
-var conString = {
-  connectionString: process.env.DB_URI,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
+var conString = process.env.DB_URI; //Can be found in the Details page
 
 const getTime = () => {
   var client = new pg.Client({
     connectionString: conString,
-    ssl:{
-      rejectUnauthorized: false
-    }
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   client.connect(function (err) {
     if (err) {
@@ -33,9 +27,9 @@ const getTime = () => {
 const getUserDetail = async (email_id) => {
   var client = new pg.Client({
     connectionString: conString,
-    ssl:{
-      rejectUnauthorized: false
-    }
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   try {
     await client.connect();
@@ -55,11 +49,12 @@ const getUserDetail = async (email_id) => {
 
 const checkUser = async (email_id, password) => {
   var client = new pg.Client({
-  connectionString: conString,
-  ssl:{
-    rejectUnauthorized: false
-  }});
-  
+    connectionString: conString,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+
   var validity = false;
 
   try {
@@ -82,9 +77,9 @@ const checkUser = async (email_id, password) => {
 const getBlogById = async (blog_id) => {
   var client = new pg.Client({
     connectionString: conString,
-    ssl:{
-      rejectUnauthorized: false
-    }
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   try {
     await client.connect();
@@ -101,10 +96,10 @@ const getBlogById = async (blog_id) => {
 
 const getBlogByTitle = async (title) => {
   var client = new pg.Client({
-  connectionString: conString,
-  ssl:{
-    rejectUnauthorized: false
-  }
+    connectionString: conString,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   try {
     await client.connect();
@@ -122,9 +117,9 @@ const getBlogByTitle = async (title) => {
 const getBlogByEmail = async (email_id) => {
   var client = new pg.Client({
     connectionString: conString,
-    ssl:{
-      rejectUnauthorized: false
-    }
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   try {
     await client.connect();
@@ -139,6 +134,66 @@ const getBlogByEmail = async (email_id) => {
   }
 };
 
+const signUp = async (
+  email_id,
+  username,
+  name,
+  dob,
+  gender,
+  country,
+  interests,
+  password
+) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  var resultMsg = { error: "", credentialError: [], success: false };
+  try {
+    client.connect();
+    var errorHappened = false;
+    // check email
+    const emailCheck = await client.query(
+      "SELECT count(*) as count FROM users WHERE email_id = $1",
+      [email_id]
+    );
+    if (Number(emailCheck.rows[0]["count"]) > 0) {
+      resultMsg["credentialError"].push("Email id already exists");
+      errorHappened = true;
+    }
+
+    // check username
+    const usernameCheck = await client.query(
+      "SELECT count(*) as count FROM users WHERE username = $1",
+      [username]
+    );
+    if (Number(usernameCheck.rows[0]["count"]) > 0) {
+      resultMsg["credentialError"].push("Username already exists");
+      errorHappened = true;
+    }
+
+    // inserting into table if no error happened
+    if (!errorHappened) {
+      await client.query("INSERT INTO users VALUES($1,$2,$3,$4,$5,$6,$7,$8)", [
+        email_id,
+        username,
+        name,
+        dob,
+        gender,
+        country,
+        interests,
+        password,
+      ]);
+      resultMsg["success"] = true;
+    }
+  } catch (e) {
+    console.log(e.stack);
+    resultMsg["error"] = "error signin up. Try after some time."; // says about error or email_id exists
+  }
+
+  return resultMsg;
+};
+
 module.exports = {
   getTime,
   checkUser,
@@ -146,4 +201,5 @@ module.exports = {
   getBlogById,
   getBlogByTitle,
   getBlogByEmail,
+  signUp,
 };
