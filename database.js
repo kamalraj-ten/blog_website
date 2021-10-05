@@ -1,12 +1,7 @@
 var pg = require("pg");
 
 //var conString = process.env.DB_URI; //Can be found in the Details page
-var conString = {
-  connectionString: process.env.DB_URI,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
+var conString =  process.env.DB_URI;
 
 const getTime = () => {
   var client = new pg.Client({
