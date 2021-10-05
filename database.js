@@ -1,7 +1,7 @@
 var pg = require("pg");
 
 //var conString = process.env.DB_URI; //Can be found in the Details page
-var conString =  process.env.DB_URI;
+var conString =  process.env.DATABASE_URL;
 
 const getTime = () => {
   var client = new pg.Client({
