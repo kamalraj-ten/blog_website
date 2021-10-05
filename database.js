@@ -1,6 +1,6 @@
 var pg = require("pg");
 
-var conString = process.env.DB_URI || 'postgres://stpjkenydtzzgh:1afb78f2a8638abf5a7d5ad7ed6f032d4e6ed5cec458154488ba73ad1a1e48c8@ec2-52-23-87-65.compute-1.amazonaws.com:5432/d7t0afu0hpmpqq'; //Can be found in the Details page
+var conString = process.env.DB_URI; //Can be found in the Details page
 
 const getTime = () => {
   var client = new pg.Client({
