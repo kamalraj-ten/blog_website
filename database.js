@@ -2,7 +2,13 @@ var pg = require("pg");
 //or native libpq bindings
 //var pg = require('pg').native
 
-var conString = process.env.DB_URI; //Can be found in the Details page
+//var conString = process.env.DB_URI; //Can be found in the Details page
+var conString = {
+  connectionString: process.env.DB_URI,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+};
 
 const getTime = () => {
   var client = new pg.Client(conString);
