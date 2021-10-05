@@ -1,6 +1,4 @@
 var pg = require("pg");
-//or native libpq bindings
-//var pg = require('pg').native
 
 //var conString = process.env.DB_URI; //Can be found in the Details page
 var conString = {
@@ -11,7 +9,12 @@ var conString = {
 };
 
 const getTime = () => {
-  var client = new pg.Client(conString);
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl:{
+      rejectUnauthorized: false
+    }
+  });
   client.connect(function (err) {
     if (err) {
       return console.error("could not connect to postgres", err);
@@ -28,8 +31,12 @@ const getTime = () => {
 };
 
 const getUserDetail = async (email_id) => {
-  var client = new pg.Client(conString);
-
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl:{
+      rejectUnauthorized: false
+    }
+  });
   try {
     await client.connect();
     const result = await client.query(
@@ -47,7 +54,12 @@ const getUserDetail = async (email_id) => {
 };
 
 const checkUser = async (email_id, password) => {
-  var client = new pg.Client(conString);
+  var client = new pg.Client({
+  connectionString: conString,
+  ssl:{
+    rejectUnauthorized: false
+  }});
+  
   var validity = false;
 
   try {
@@ -68,7 +80,12 @@ const checkUser = async (email_id, password) => {
 };
 
 const getBlogById = async (blog_id) => {
-  var client = new pg.Client(conString);
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl:{
+      rejectUnauthorized: false
+    }
+  });
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE blog_id = $1", [
@@ -83,7 +100,12 @@ const getBlogById = async (blog_id) => {
 };
 
 const getBlogByTitle = async (title) => {
-  var client = new pg.Client(conString);
+  var client = new pg.Client({
+  connectionString: conString,
+  ssl:{
+    rejectUnauthorized: false
+  }
+  });
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE title LIKE $1", [
@@ -98,7 +120,12 @@ const getBlogByTitle = async (title) => {
 };
 
 const getBlogByEmail = async (email_id) => {
-  var client = new pg.Client(conString);
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl:{
+      rejectUnauthorized: false
+    }
+  });
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE email_id = $1", [
