@@ -1,47 +1,77 @@
-.db{
-   margin-left:100px;
-   margin-bottom:30px;
+.db {
+  margin-left: 100px;
+  margin-bottom: 30px;
 }
-.gb{
-   margin-left:180px;
-   margin-bottom:30px;
+.gb {
+  margin-left: 180px;
+  margin-bottom: 30px;
 }
-h1{
-   padding-top:50px;
-   margin-left:480px;
-   }
-h2{
-  margin-left:480px;
-  }
-body{
-    background-color:powderblue;
-    }
-.userdetl{
-      margin-left:350px;
-     }
-.clibut{
-       margin-left:480px;
-     }
-.flexb{
-     display:flex;
-     flex-direction:row;
-     flex-wrap:wrap;
-     background-color:powderblue;
-     padding-left:10px;
-     padding-right:10px;
-     margin-left:300px;
-     margin-right:400px;
-    }
-.flexb >div{
-   
-   display:inline-block;
-   background-color:#f1f1f1;
-   width:100px;
-   margin:10px;
-   text-align:center;
-   line-height:30px;
-   font-size:15px;
- }
+h1 {
+  padding-top: 50px;
+  text-align: center;
+}
+h2 {
+  text-align: center;
+}
+body {
+  background-color: whitesmoke;
+}
+.button {
+  background-color: #1f2833;
+  color: #66fcf1;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid #1f2833;
+  font-weight: lighter;
+}
+.userdetl {
+  width: 80%;
+}
+.clibut {
+  margin-top: 10px;
+}
+.flexb {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: whitesmoke;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+.flexb > div {
+  display: inline-block;
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 15px;
+}
+#signupgender {
+  margin-right: 23px;
+}
 
+.flexb div {
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  padding: 2px 5px;
+  font-style: italic;
+  cursor: default;
+}
+.flexb div:hover {
+  color: turquoise;
+}
 
+.checked {
+  background-color: red !important;
+}
+.checked:hover {
+  color: white !important;
+  font-size: large;
+}
 
+input {
+  border-radius: 10px;
+  padding: 3px 5px;
+}
