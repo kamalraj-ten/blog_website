@@ -1,0 +1,47 @@
+.db{
+   margin-left:100px;
+   margin-bottom:30px;
+}
+.gb{
+   margin-left:180px;
+   margin-bottom:30px;
+}
+h1{
+   padding-top:50px;
+   margin-left:480px;
+   }
+h2{
+  margin-left:480px;
+  }
+body{
+    background-color:powderblue;
+    }
+.userdetl{
+      margin-left:350px;
+     }
+.clibut{
+       margin-left:480px;
+     }
+.flexb{
+     display:flex;
+     flex-direction:row;
+     flex-wrap:wrap;
+     background-color:powderblue;
+     padding-left:10px;
+     padding-right:10px;
+     margin-left:300px;
+     margin-right:400px;
+    }
+.flexb >div{
+   
+   display:inline-block;
+   background-color:#f1f1f1;
+   width:100px;
+   margin:10px;
+   text-align:center;
+   line-height:30px;
+   font-size:15px;
+ }
+
+
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> SIGN UP </title>
+     <script src="./signupblog.js"></script>
+  </head>
+  <body>
+    <link rel="stylesheet" href="sopd.css">
+    <h1> SIGN UP </h1>
+    <div class="userdetl">
+       <label for "fullname">  </label>
+       <input type="text" placeholder="      Full name" name="fullname" id="signupname"  required>
+       <label for "dob"></label>
+       <input type="date" placeholder="      DOB" name="dob" id="signupdob" class="db" required">
+       <br>
+       <br>
+       <label for "username"> </label>
+       <input type="text" placeholder="      Username" name="username" id="signupusername" required>
+       <label for "pwd"> </label>
+       <input type="password" placeholder="      Password" name="pwd" id="signuppswd" class="db" required>
+       <br>
+       <br>
+       <label for "email"> </label>
+       <input type="text" placeholder="      Email id" name="email" id="signupmail" required>
+       <label for "cnpwd"> </label>
+       <input type="password" placeholder="      Confirm password" id="signupcpswd" class="db" name="cnpwd" required>
+       <br>
+       <br>
+       <label for "gender"> </label>
+       <select id="signupgender" name="gender" placeholder="      Gender">
+       <option value="Male">Male</option>
+       <option value="Female">Female</option>
+       <label for "cntry"> </label>
+       <input type="text" placeholder="      Country" name="cntry" class="gb" id="signupcntry" required>
+       <br>
+   </div>
+   <h2>Field of Interest </h2> 
+   <div class="flexb">
+     <div>Brands</div>
+     <div>C</div>
+     <div>C++</div>
+     <div>Countries</div>
+     <div>Entertainment</div>
+     <div>Flutter</div>
+     <div>Government</div>
+     <div>Movies</div>
+     <div>Law</div>
+     <div>Locations</div>
+     <div>Lifestyle</div>
+     <div>Medicine</div>
+     <div>Memes</div>
+     <div>Music</div>
+     <div>Politics</div>
+     <div>Social services</div>
+     <div>Sports</div>
+     <div>Technology</div>
+     <div>Travel</div>
+     <div>World News</div>
+   </div> 
+   <div class="clibut">
+     <button type="button" class="cancelbutton" id="cancelbtn" name="cancelsignup" onClick="rdcancel()">Cancel</button>
+     <button type="button" class="signupbutton" id="signupbtn" name="signing_up" onClick="rdsignup()">Sign Up</button>
+  </div>   
+  </body>
+</html>
