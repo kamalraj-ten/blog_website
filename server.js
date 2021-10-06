@@ -13,7 +13,7 @@ const categories = [
   "Entertainment",
   "Flutter",
   "Government",
-  "HBD",
+  "Movies",
   "Law",
   "Locations",
   "Lifestyle",
@@ -35,20 +35,20 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
 
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+app.engine("handlebars", exphbs());
+app.set("view engine", "handlebars");
 
-app.get("/",(req,res)=>{
-  res.render('mainpage',{
-    username:"user_name",
-    blogs:[
+app.get("/", (req, res) => {
+  res.render("mainpage", {
+    username: "user_name",
+    blogs: [
       {
-        title:"blog1"
+        title: "blog1",
       },
       {
-        title:"blog2"
-      }
-    ]
+        title: "blog2",
+      },
+    ],
   });
 });
 
