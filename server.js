@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const Database = require("./database");
 const bodyParser = require("body-parser");
+const exphbs = require("express-handlebars");
 
 const categories = [
   "Brands",
@@ -33,6 +34,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
+
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+app.get("/",(req,res)=>{
+  res.render('index');
+});
 
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(bodyParser.urlencoded({ extended: false }));
