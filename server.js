@@ -39,7 +39,17 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 app.get("/",(req,res)=>{
-  res.render('index');
+  res.render('mainpage',{
+    username:"user_name",
+    blogs:[
+      {
+        title:"blog1"
+      },
+      {
+        title:"blog2"
+      }
+    ]
+  });
 });
 
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html

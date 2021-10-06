@@ -1,0 +1,24 @@
+<title>Blog main page</title>
+<header>
+    <picture>
+        <img src="" alt="profile pic">
+    </picture>
+    <title>Home</title>
+    <input type="search" placeholder="search box">
+</header>
+<nav>
+    <button onclick="location.href = ''">Blogger suggestion</button>
+    <button onclick="location.href = ''">Blog reccomendation</button>
+    <button onclick="location.href = ''">Create</button>
+    <button onclick="location.href = ''">Logout</button>
+</nav>
+<section id="disp_own_blog_cont">
+    <h2>
+        {{username}}
+    </h2>
+    <ul class="list-group">
+        {{#each blogs}}
+            <li class="list-group-item">{{this.title}}</li>
+        {{/each}}
+    </ul>
+</section>
