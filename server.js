@@ -37,6 +37,13 @@ app.listen(PORT);
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// pages
+app.get("/sign_up", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "signup2.html"))
+);
+app.get("/home", (req, res) => res.send("home page"));
+app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
+
 // api's
 // database api functions
 app.get("/database/sign_in", async (req, res) => {
