@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const Database = require("./database");
 const bodyParser = require("body-parser");
-const fs = require("fs");
 
 const categories = [
   "Brands",
@@ -106,28 +105,4 @@ app.get("/blog/get_blog_by_title", async (req, res) => {
 app.get("/blog/get_blog_by_email", async (req, res) => {
   const blogs = await Database.getBlogByEmail(req.body["email_id"]);
   res.send(blogs);
-});
-
-//following functions are used to handle html handle page requests
-
-//returns the index.html page
-app.get("/login", async (req, res) => {
-  fs.readFile(
-    path.join(__dirname, "public", "index.html"),
-    "utf8",
-    (err, data) => {
-      if (err) {
-        if (err == "ENOENT") {
-          res.writeHead(404);
-          res.end("PAGE NOT FOUND");
-        } else {
-          res.writeHead(500);
-          res.end("server error");
-        }
-      } else {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(data);
-      }
-    }
-  );
 });
