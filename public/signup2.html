@@ -2,25 +2,7 @@
 <html>
   <head>
     <title> SIGN UP </title>
-     <script src="./signupblog.js"></script>
-     <script>
-       var interests = [];
-       function selectInterest(event) {
-         const srcText = event.srcElement.firstChild.data;
-         if (event.srcElement.id == "interests") return;
-
-         const classlist = event.srcElement.classList;
-         if(classlist.contains("checked")){
-           classlist.remove("checked");
-           interests = interests.filter(ele => ele !== srcText);
-         } else {
-           classlist.add("checked");
-           interests.push(srcText);
-         }
-         console.log(interests);
-         event.stopPropagation();
-       }
-     </script>
+     <script src="./scripts/signup.js"></script>
   </head>
   <body>
     <link rel="stylesheet" href="./css/signup.css">

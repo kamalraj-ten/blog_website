@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Database = require("./database");
-const bodyParser = require("body-parser");
+const parserObject = require("body-parser");
 const exphbs = require("express-handlebars");
 
 const categories = [
@@ -53,7 +53,9 @@ app.get("/", (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+//var bodyParserEncoder = parserObject.urlencoded({ extended: false });
 
 // pages
 app.get("/sign_up", (req, res) =>
@@ -64,7 +66,7 @@ app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
 
 // api's
 // database api functions
-app.get("/database/sign_in", async (req, res) => {
+app.post("/database/sign_in", async (req, res) => {
   //console.log(req.body);
   const validity = await Database.checkUser(
     req.body["email_id"],
@@ -74,7 +76,7 @@ app.get("/database/sign_in", async (req, res) => {
   if (validity) res.send("signed in");
   else res.send("not signed in");
 });
-app.get("/database/sign_up", async (req, res) => {
+app.post("/database/sign_up", async (req, res) => {
   // dob - javascript Date object
   // interests - array of interests
   // gender - M, F, T
@@ -99,7 +101,7 @@ app.get("/database/sign_up", async (req, res) => {
       ++j;
     } else interestVector += 0;
   }
-
+  //console.log(interestVector);
   const response = await Database.signUp(
     email_id,
     username,
@@ -130,4 +132,11 @@ app.get("/blog/get_blog_by_title", async (req, res) => {
 app.get("/blog/get_blog_by_email", async (req, res) => {
   const blogs = await Database.getBlogByEmail(req.body["email_id"]);
   res.send(blogs);
+});
+
+// testing
+app.post("/testing", (req, res) => {
+  console.log(req.body);
+  //console.log(req);
+  res.json({ response: "hello" });
 });
