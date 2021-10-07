@@ -58,6 +58,9 @@ app.use(express.json());
 //var bodyParserEncoder = parserObject.urlencoded({ extended: false });
 
 // pages
+app.get("/login", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "login.html"))
+);
 app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
@@ -73,8 +76,7 @@ app.post("/database/sign_in", async (req, res) => {
     req.body["password"]
   );
   //console.log(validity);
-  if (validity) res.send("signed in");
-  else res.send("not signed in");
+  res.json({ validity });
 });
 app.post("/database/sign_up", async (req, res) => {
   // dob - javascript Date object
