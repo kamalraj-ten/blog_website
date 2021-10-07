@@ -5,40 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./scripts/login.js"></script>
-    <style>
-      .ticked::before {
-        content: "";
-        background: url("icons/check.png") no-repeat;
-        width: 10px;
-        height: 10px;
-        float: left;
-        padding: 5px;
-        display: block;
-      }
-    </style>
-    <title>BLOG PAGE</title>
+    <script src="scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <title>Blog Login</title>
   </head>
   <body>
-    <header>
-      <h1>Blog Website</h1>
-    </header>
-    <section>
-      <h2>Login</h2>
-      <label for="email_inp">User name/Email</label>
-      <input type="email" id="email_inp" name="email" />
-      <br />
-      <label for="password_inp">Password</label>
-      <input type="password" id="password_inp" name="password" />
-      <br />
-      <button type="button" onclick="login()">Login</button>
-    </section>
-    <div class="ticked">
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero at
-      voluptates iste nisi et! Error, atque praesentium. In, facere ratione, qui
-      quidem repellat, molestias ipsum dolorem harum officiis dicta inventore.
+    <div class="container text-center">
+        <h1>Blog Website</h1>
     </div>
-    <footer>
-      <p>This website is created as semester project.</p>
-    </footer>
-  </body>
+    <div class="container text-center d-inline align-middle">
+      <h2>Login</h2><br><br>
+      <form action="">
+        <div class="form-group">
+          <label>User name/Email</label><br>
+          <input type="email" id="email_inp" class="from-control" name="email" placeholder="Email"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label><br>
+          <input type="password" id="password_inp" class="from-control" name="password" placeholder="Password"/>
+        </div><br>
+        <button type="button" class="btn btn-primary" onclick="login()">Signin</button>
+        <p class="text-center text-muted">Or</p>
+        <button type="button" class="btn btn-primary" onclick="location.href=''">Signup</button>
+      </form>
+    </div>
+    <div class="text-left text-light text-muted bg-dark fixed-bottom">
+      <footer>
+        <p>This website is created as semester project.</p>
+      </footer>
+    </div>
+    </body>
 </html>
