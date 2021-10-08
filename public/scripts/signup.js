@@ -17,10 +17,10 @@ function rdsignup() {
     console.log(pswd.value);
     allCorrect = false;
   }
-  //   if (!email.includes("gmail.com")) {
-  //     alert("Enter the valid Gmail Id");
-  //     allCorrect = false;
-  //   }
+  if (email.value.length < 5) {
+    alert("Enter the valid Gmail Id with length > 5");
+    allCorrect = false;
+  }
   if (pswd.value.length < 5) {
     alert("Your password length is too low");
     allCorrect = false;
@@ -62,7 +62,7 @@ function rdsignup() {
       .then((json) => {
         console.log(json);
         if (json.success) {
-          window.location.href = "/";
+          window.location.href = "/login";
         } else {
           if (json.error !== "") alert(json.error);
           else alert(json.credentialError);

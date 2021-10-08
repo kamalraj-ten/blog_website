@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Database = require("./database");
-const parserObject = require("body-parser");
+const Analytics = require("./analytics");
 const exphbs = require("express-handlebars");
 
 const categories = [
@@ -29,6 +29,9 @@ const categories = [
 ];
 
 //Database.getTime();
+Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
+  console.log(suggestedBlogs)
+);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -53,7 +56,7 @@ app.get("/", (req, res) => {
       },
       {
         title: "blog4",
-      }
+      },
     ],
   });
 });

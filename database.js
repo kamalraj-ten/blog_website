@@ -329,6 +329,38 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
   }
 };
 
+const getBlogCategories = async () => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query("SELECT blog_id, categories FROM blogs");
+    client.end();
+    return res.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
+const getUserInterests = async () => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query("SELECT email_id, interests FROM users");
+    client.end();
+    return res.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
 const general = async () => {
   var client = new pg.Client({
     connectionString: conString,
@@ -358,4 +390,6 @@ module.exports = {
   LikeBlog,
   getBlogLikeCount,
   addBlogView,
+  getBlogCategories,
+  getUserInterests,
 };

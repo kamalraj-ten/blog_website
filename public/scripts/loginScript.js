@@ -16,6 +16,7 @@ async function handleSubmit(event) {
   const { validity } = await response.json();
   console.log(validity);
   if (validity) {
+    localStorage.setItem("email_id", email.value);
     window.location.href = "/home";
   } else {
     alert("Invalid credentials");
