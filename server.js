@@ -2,8 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Database = require("./database");
-const bodyParser = require("body-parser");
-const fs = require("fs");
+const parserObject = require("body-parser");
+const exphbs = require("express-handlebars");
 
 const categories = [
   "Brands",
@@ -13,7 +13,7 @@ const categories = [
   "Entertainment",
   "Flutter",
   "Government",
-  "HBD",
+  "Movies",
   "Law",
   "Locations",
   "Lifestyle",
@@ -28,29 +28,63 @@ const categories = [
   "World News",
 ];
 
-Database.getTime();
+//Database.getTime();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
 
+app.engine("handlebars", exphbs());
+app.set("view engine", "handlebars");
+
+app.get("/", (req, res) => {
+  res.render("mainpage", {
+    username: "user_name",
+    blogs: [
+      {
+        title: "blog1",
+      },
+      {
+        title: "blog2",
+      },
+      {
+        title: "blog3",
+      },
+      {
+        title: "blog4",
+      }
+    ],
+  });
+});
+
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+//var bodyParserEncoder = parserObject.urlencoded({ extended: false });
+
+// pages
+app.get("/login", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "login.html"))
+);
+app.get("/sign_up", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "signup2.html"))
+);
+app.get("/home", (req, res) => res.send("home page"));
+app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
 
 // api's
 // database api functions
-app.get("/database/sign_in", async (req, res) => {
+app.post("/database/sign_in", async (req, res) => {
   //console.log(req.body);
   const validity = await Database.checkUser(
     req.body["email_id"],
     req.body["password"]
   );
   //console.log(validity);
-  if (validity) res.send("signed in");
-  else res.send("not signed in");
+  res.json({ validity });
 });
-app.get("/database/sign_up", async (req, res) => {
+app.post("/database/sign_up", async (req, res) => {
   // dob - javascript Date object
   // interests - array of interests
   // gender - M, F, T
@@ -75,7 +109,7 @@ app.get("/database/sign_up", async (req, res) => {
       ++j;
     } else interestVector += 0;
   }
-
+  //console.log(interestVector);
   const response = await Database.signUp(
     email_id,
     username,
@@ -108,26 +142,9 @@ app.get("/blog/get_blog_by_email", async (req, res) => {
   res.send(blogs);
 });
 
-//following functions are used to handle html handle page requests
-
-//returns the index.html page
-app.get("/login", async (req, res) => {
-  fs.readFile(
-    path.join(__dirname, "public", "index.html"),
-    "utf8",
-    (err, data) => {
-      if (err) {
-        if (err == "ENOENT") {
-          res.writeHead(404);
-          res.end("PAGE NOT FOUND");
-        } else {
-          res.writeHead(500);
-          res.end("server error");
-        }
-      } else {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(data);
-      }
-    }
-  );
+// testing
+app.post("/testing", (req, res) => {
+  console.log(req.body);
+  //console.log(req);
+  res.json({ response: "hello" });
 });

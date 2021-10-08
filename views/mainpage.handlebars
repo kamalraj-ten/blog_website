@@ -1,0 +1,30 @@
+<title>Blog main page</title>
+<header>
+    <div class="container d-flex flex-row-reverse justify-content-between align-items-center">
+        <div class="">
+            <input type="search" placeholder="search box"> 
+        </div>
+        <div>
+            <h1>Blog Home</h1>
+        </div>
+        <div class="d-inline">
+            <picture><img src="../icons/" alt="profile pic"></picture>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class ="d-flex flex-row-reverse justify-content-around">
+        <span><button class="btn btn-primary" onclick="location.href = '#'">Logout</button></span>
+        <span><button class="btn btn-primary" onclick="location.href = '#'">Create</button></span>
+        <span><button class="btn btn-primary" onclick="location.href = '#'">Blog reccomendation</button></span>
+        <span><button class="btn btn-primary" onclick="location.href = '#'">Blogger suggestion</button></span>
+    </div>
+</div>
+<section class="container">
+    <div><h2>{{username}}</h2></div>
+    <div class="row row-cols-3">
+        {{#each blogs}}
+            <div class="col">{{this.title}}</div>
+        {{/each}}
+    </div>
+</section>

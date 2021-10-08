@@ -2,16 +2,17 @@
 <html>
   <head>
     <title> SIGN UP </title>
-     <script src="./signupblog.js"></script>
+     <script src="./scripts/signup.js"></script>
   </head>
   <body>
-    <link rel="stylesheet" href="C:\Users\LENOVO\OneDrive\Desktop\blog_web\public\css\signup.css">
+    <link rel="stylesheet" href="./css/signup.css">
     <h1> SIGN UP </h1>
+    <center>
     <div class="userdetl">
        <label for "fullname">  </label>
        <input type="text" placeholder="      Full name" name="fullname" id="signupname"  required>
-       <label for "dob"></label>
-       <input type="date" placeholder="DOB" name="dob" id="signupdob" class="db" required">
+       <input type="date" placeholder="      DOB" name="dob" id="signupdob" class="db" required>
+       <label for "dob">DOB</label>
        <br>
        <br>
        <label for "username"> </label>
@@ -34,8 +35,11 @@
        <input type="text" placeholder="      Country" name="cntry" class="gb" id="signupcntry" required>
        <br>
    </div>
-   <h2>Field of Interest </h2> 
-   <div class="flexb">
+  </center>
+  <hr />
+   <h2>Field of Interest </h2>
+   <center> 
+   <div id="interests" class="flexb" onclick="selectInterest(event)">
      <div>Brands</div>
      <div>C</div>
      <div>C++</div>
@@ -57,9 +61,13 @@
      <div>Travel</div>
      <div>World News</div>
    </div> 
+  </center>
+  <hr />
+  <center>
    <div class="clibut">
-     <button type="button" class="cancelbutton" id="cancelbtn" name="cancelsignup" onClick="rdcancel()">Cancel</button>
-     <button type="button" class="signupbutton" id="signupbtn" name="signing_up" onClick="rdsignup()">Sign Up</button>
-  </div>   
+     <button type="button" class="cancelbutton button" id="cancelbtn" name="cancelsignup" onClick="rdcancel()">Cancel</button>
+     <button type="button" class="signupbutton button" id="signupbtn" name="signing_up" onClick="rdsignup()">Sign Up</button>
+  </div>  
+  </center> 
   </body>
 </html>
