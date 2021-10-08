@@ -195,6 +195,154 @@ const signUp = async (
   return resultMsg;
 };
 
+const createBlog = async (title, visibility, content, categories, email_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    await client.query(
+      "INSERT INTO blogs(title, date, visibility, context, categories, email_id) VALUES ($1, $2, $3, $4, $5, $6)",
+      [title, new Date(), visibility, content, categories, email_id]
+    );
+    client.end();
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false; // failure
+  }
+};
+
+const followUser = async (follower, following) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    await client.query("INSERT INTO followers VALUES ($1, $2)", [
+      follower,
+      following,
+    ]);
+    client.close();
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
+const getFollowingCount = async (email_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT * FROM followers where follower_email = $1",
+      [email_id]
+    );
+    client.end();
+    return res.rows.length;
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
+const getFollowerCount = async (email_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT * FROM followers where following_email = $1",
+      [email_id]
+    );
+    client.end();
+    return res.rows.length;
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
+const LikeBlog = async (email_id, blog_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    await client.query("INSERT INTO bloglikes VALUES ($1, $2)", [
+      email_id,
+      blog_id,
+    ]);
+    client.end();
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
+const getBlogLikeCount = async (blog_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT COUNT(*) as count FROM bloglikes WHERE blog_id = $1",
+      [blog_id]
+    );
+    client.end();
+    return res.rows["count"];
+  } catch (e) {
+    console.log(e.stack);
+    return 0;
+  }
+};
+
+const addBlogView = async (email_id, blog_id, date = new Date()) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    await client.query("INSERT INTO blogviews VALUES ($1,$2,$3)", [
+      email_id,
+      blog_id,
+      date,
+    ]);
+    client.end();
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
+const general = async () => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    client.end();
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
 module.exports = {
   getTime,
   checkUser,
@@ -203,4 +351,11 @@ module.exports = {
   getBlogByTitle,
   getBlogByEmail,
   signUp,
+  getFollowerCount,
+  getFollowingCount,
+  followUser,
+  createBlog,
+  LikeBlog,
+  getBlogLikeCount,
+  addBlogView,
 };
