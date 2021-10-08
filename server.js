@@ -48,6 +48,12 @@ app.get("/", (req, res) => {
       {
         title: "blog2",
       },
+      {
+        title: "blog3",
+      },
+      {
+        title: "blog4",
+      }
     ],
   });
 });
