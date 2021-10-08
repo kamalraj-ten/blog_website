@@ -195,7 +195,14 @@ const signUp = async (
   return resultMsg;
 };
 
-const createBlog = async (title, visibility, content, categories, email_id) => {
+const createBlog = async (
+  title,
+  visibility,
+  content,
+  categories,
+  email_id,
+  subject
+) => {
   var client = new pg.Client({
     connectionString: conString,
     ssl: { rejectUnauthorized: false },
@@ -203,8 +210,8 @@ const createBlog = async (title, visibility, content, categories, email_id) => {
   try {
     await client.connect();
     await client.query(
-      "INSERT INTO blogs(title, date, visibility, context, categories, email_id) VALUES ($1, $2, $3, $4, $5, $6)",
-      [title, new Date(), visibility, content, categories, email_id]
+      "INSERT INTO blogs(title, date, visibility, context, categories, email_id, subject) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      [title, new Date(), visibility, content, categories, email_id, subject]
     );
     client.end();
     return true;
