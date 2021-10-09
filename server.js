@@ -42,28 +42,21 @@ app.listen(PORT);
 app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
-app.get("/", (req, res) => {
-  res.render("mainpage", {
-    username: "user_name",
-    blogs: [
-      {
-        title: "blog1",
-        subject: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore nostrum cum, exercitationem iure iste obcaecati sed atque quibusdam saepe asperiores, recusandae eum, reiciendis sequi. Similique nisi sint minus placeat laboriosam!"
-      },
-      {
-        title: "blog2",
-        subject: "sub1"
-      },
-      {
-        title: "blog3",
-        subject: "sub1"
-      },
-      {
-        title: "blog4",
-        subject: "sub1"
-      },
-    ],
-  });
+app.get("/blogHome/:email_id",async (req, res) => {
+  var data = {
+    username: "",
+    blogs: []
+  };
+  const blogs = Database.getBlogByEmail(req.params.email_id)
+  const username = Database.getUserDetail(req.params.email_id)["username"];
+  console.log(data);
+  if(blogs){
+    data.blogs="No Blogs written";
+    res.render("noContentMainpage",data);
+  }else{
+    data.blogs = blogs;
+    res.render("mainpage",data);
+  }
 });
 
 app.get("/blog_suggestions/:email_id", async (req, res) => {
@@ -114,7 +107,7 @@ app.get("/login", (req, res) =>
 app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
-app.get("/home", (req, res) => res.send("home page"));
+// app.get("/home", (req, res) => res.send("home page"));
 app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
 app.get("/blog/:id", (req, res) => res.send(req.params.id));
 
