@@ -48,15 +48,19 @@ app.get("/", (req, res) => {
     blogs: [
       {
         title: "blog1",
+        subject: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore nostrum cum, exercitationem iure iste obcaecati sed atque quibusdam saepe asperiores, recusandae eum, reiciendis sequi. Similique nisi sint minus placeat laboriosam!"
       },
       {
         title: "blog2",
+        subject: "sub1"
       },
       {
         title: "blog3",
+        subject: "sub1"
       },
       {
         title: "blog4",
+        subject: "sub1"
       },
     ],
   });

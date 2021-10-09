@@ -28,14 +28,14 @@
   </div>
 </nav>
 <section class="container">
-    <div><h2>Blog I Wrote</h2></div>
+    <div><h2>Blogs I Wrote</h2></div>
     <div class="row row-cols-3 ml-1">
         {{#each blogs}}
-            <div class="col card m-1" style="width: 32%;">
+            <div class="col-lg-4 card m-1" style="width: 32%;">
                 <div class="card-body">
                     <h5 class="card-title">{{this.title}}</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <p class="card-text">{{this.subject}}</p>
+                    <a href="#" class="btn btn-primary">Read Blog</a>
                 </div>
             </div>
         {{/each}}
