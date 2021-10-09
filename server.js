@@ -4,6 +4,7 @@ const path = require("path");
 const Database = require("./database");
 const Analytics = require("./analytics");
 const exphbs = require("express-handlebars");
+const { send } = require("process");
 
 const categories = [
   "Brands",
@@ -29,9 +30,9 @@ const categories = [
 ];
 
 //Database.getTime();
-Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
-  console.log(suggestedBlogs)
-);
+// Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
+//   console.log(suggestedBlogs)
+// );
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,42 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/blog_suggestions/:email_id", async (req, res) => {
+  const blogSuggestions = await Analytics.blogSuggestion(req.params.email_id);
+  var suggestions = [];
+  for (var i = 0; i < blogSuggestions.length; ++i) {
+    const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
+    suggestions.push({
+      title: blog.title,
+      subject: blog.subject,
+      link: "/blog/" + blog.blog_id,
+      action: "Open",
+    });
+  }
+  res.render("suggestion_page", {
+    suggestion_title: "Blog suggestions",
+    suggestions,
+  });
+});
+
+app.get("/user_suggestions/:email_id", async (req, res) => {
+  const userSuggestions = await Analytics.userSuggestion(req.params.email_id);
+  var suggestions = [];
+  for (var i = 0; i < userSuggestions.length; ++i) {
+    const user = await Database.getUserDetail(userSuggestions[i].email_id);
+    suggestions.push({
+      title: user.username,
+      subject: user.email_id,
+      link: "/user/" + user.email_id,
+      action: "See",
+    });
+  }
+  res.render("suggestion_page", {
+    suggestion_title: "User suggestions",
+    suggestions,
+  });
+});
+
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -75,6 +112,7 @@ app.get("/sign_up", (req, res) =>
 );
 app.get("/home", (req, res) => res.send("home page"));
 app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
+app.get("/blog/:id", (req, res) => res.send(req.params.id));
 
 // api's
 // database api functions

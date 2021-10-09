@@ -1,0 +1,14 @@
+<h1 class="text-center">{{suggestion_title}}</h1>
+<div class="container">
+  <div class="row row-cols-3">
+    {{#each suggestions}}
+      <div class="card w-25 m-3">
+        <div class="card-body">
+          <h5 class="card-title">{{this.title}}</h5>
+          <p class="card-text">{{this.subject}}</p>
+          <a href={{this.link}} class="btn btn-primary">{{this.action}}</a>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
