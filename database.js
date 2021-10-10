@@ -368,6 +368,84 @@ const getUserInterests = async () => {
   }
 };
 
+const getBlogCount = async (email_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT COUNT(*) as count FROM blogs WHERE email_id = $1",
+      [email_id]
+    );
+    client.end();
+    //console.log("count", res.rows);
+    return res.rows[0]["count"];
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
+const isFollowing = async (email_id, following_email) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT COUNT(*) AS count FROM followers WHERE follower_email = $1 AND following_email = $2",
+      [email_id, following_email]
+    );
+    client.end();
+    return res.rows[0]["count"];
+  } catch (e) {
+    console.log(e.stack);
+    return -1;
+  }
+};
+
+// call it during login and logout
+const updateTracking = async (email_id) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    // check if the log already present for the day
+    const now = new Date();
+    const dateCheck = await client.query(
+      "SELECT * FROM tracking WHERE email_id = $1 AND date = $2",
+      [email_id, now]
+    );
+    if (dateCheck.rows.length == 1) {
+      // log already present
+      const milliseconds = now - dateCheck.rows[0].last_time;
+      const hours = milliseconds / 36e5 + dateCheck.rows[0].hours_used;
+      await client.query(
+        "UPDATE tracking SET last_time = $1, hours_used = $2 WHERE email_id = $3 AND date = $4",
+        [now, hours, email_id, now]
+      );
+    } else {
+      // create new log
+      await client.query("INSERT INTO tracking VALUES ($1,$2,$3,$4)", [
+        email_id,
+        now,
+        0,
+        now,
+      ]);
+    }
+    client.end();
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
 const general = async () => {
   var client = new pg.Client({
     connectionString: conString,
@@ -399,4 +477,7 @@ module.exports = {
   addBlogView,
   getBlogCategories,
   getUserInterests,
+  getBlogCount,
+  isFollowing,
+  updateTracking,
 };

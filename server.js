@@ -5,6 +5,7 @@ const Database = require("./database");
 const Analytics = require("./analytics");
 const exphbs = require("express-handlebars");
 const { send } = require("process");
+const { fips } = require("crypto");
 
 const categories = [
   "Brands",
@@ -38,8 +39,20 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
-
-app.engine("handlebars", exphbs());
+var hbs = exphbs.create({
+  helpers: {
+    followButton: (ele) => {
+      if (!ele.isFollowing)
+        return (
+          "<button onclick=\"follow('" +
+          ele.email_id +
+          '\')" class="btn btn-primary">Follow</button>'
+        );
+      else return '<span class="badge bg-secondary">following</span>';
+    },
+  },
+});
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
 app.get("/", (req, res) => {
@@ -111,7 +124,35 @@ app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
 app.get("/home", (req, res) => res.send("home page"));
-app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
+app.get("/user/:id-:email_id", async (req, res) => {
+  // email_id is the current user email_id
+  const user = await Database.getUserDetail(req.params.id);
+  const follower = await Database.getFollowerCount(req.params.id);
+  const following = await Database.getFollowingCount(req.params.id);
+  const blog_count = await Database.getBlogCount(req.params.id);
+  const isFollowing =
+    (await Database.isFollowing(req.params.email_id, req.params.id)) == 1;
+  const userBlogs = await Database.getBlogByEmail(req.params.id);
+  const blogs = [];
+  for (var i = 0; i < userBlogs.length; ++i) {
+    blogs.push({
+      title: userBlogs[i].title,
+      subject: userBlogs[i].subject,
+      link: "/blog/" + userBlogs[i].blog_id,
+      action: "Open",
+    });
+  }
+  res.render("userpage", {
+    username: user.username,
+    name: user.name,
+    email_id: user.email_id,
+    following,
+    follower,
+    isFollowing,
+    blog_count,
+    blogs,
+  });
+});
 app.get("/blog/:id", (req, res) => res.send(req.params.id));
 
 // api's
@@ -181,6 +222,18 @@ app.get("/blog/get_blog_by_title", async (req, res) => {
 app.get("/blog/get_blog_by_email", async (req, res) => {
   const blogs = await Database.getBlogByEmail(req.body["email_id"]);
   res.send(blogs);
+});
+
+// follow api
+app.post("/follow_user", async (req, res) => {
+  const { follower, following } = req.body;
+  try {
+    await Database.followUser(follower, following);
+    res.send(true);
+  } catch (e) {
+    console.log(e.stack);
+    res.json({ validity: false });
+  }
 });
 
 // testing

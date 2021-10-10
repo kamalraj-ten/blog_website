@@ -1,0 +1,39 @@
+<div class="container p-6">
+  <div class="row mt-5">
+    <div class="w-75">
+      <div class="row">
+        <h1 class="pl-3 display-6 w-50">{{name}}</h1>
+        <span>{{{followButton this}}}</span>
+      </div>
+    </div>
+    <div class="w-25">
+      <a href="/" class="btn btn-secondary">Home</a>
+    </div>
+  </div>
+  <small class="text-muted mt-2 mb-3">{{email_id}} | {{username}}</small>
+  <div class="row">
+    <span class="w-50 border">Followers
+      <span class="display-6">{{follower}}</span></span>
+    <span class="w-50 border">Following
+      <span class="display-6">{{following}}</span></span>
+  </div>
+  <div>Blogs Written <span class="display-6">{{blog_count}}</span></div>
+  <div class="container mt-5 border bg-light">
+    <h5>Written blogs</h5>
+    {{#if blog_count}}
+      <div class="row-cols-4 mt-2">
+        {{#each blogs}}
+          <div class="card w-25 p-2">
+            <div class="card-body">
+              <h5 class="card-title">{{this.title}}</h5>
+              <p class="card-text">{{this.subject}}</p>
+              <a href={{this.link}} class="btn btn-primary">{{this.action}}</a>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <div>No written blogs</div>
+    {{/if}}
+  </div>
+</div>
