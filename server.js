@@ -4,8 +4,6 @@ const path = require("path");
 const Database = require("./database");
 const Analytics = require("./analytics");
 const exphbs = require("express-handlebars");
-const { send } = require("process");
-const { fips } = require("crypto");
 
 const categories = [
   "Brands",
@@ -55,24 +53,30 @@ var hbs = exphbs.create({
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
-app.get("/", (req, res) => {
-  res.render("mainpage", {
-    username: "user_name",
-    blogs: [
-      {
-        title: "blog1",
-      },
-      {
-        title: "blog2",
-      },
-      {
-        title: "blog3",
-      },
-      {
-        title: "blog4",
-      },
-    ],
-  });
+app.get("/blogHome/:email_id", async (req, res) => {
+  let data = {
+    username: " ",
+    blogsList: [],
+    emtBlogsList: true,
+    email: req.params.email_id,
+  };
+  const tempdat = await Database.getUserDetail(req.params.email_id);
+  let blogs = await Database.getBlogByEmail(req.params.email_id);
+  if (tempdat != null) {
+    data.username = tempdat["username"];
+    if (blogs.length != 0) {
+      data.emtBlogsList = false;
+      data.blogsList = blogs;
+    }
+    res.render("mainpage", data);
+  } else {
+    res.end("");
+  }
+});
+
+app.get("/blog/:blog_id", async (req, res) => {
+  let blog = await Database.getBlogById(req.params.blog_id);
+  res.end(JSON.stringify(blog));
 });
 
 app.get("/blog_suggestions/:email_id", async (req, res) => {
@@ -114,7 +118,6 @@ app.get("/user_suggestions/:email_id", async (req, res) => {
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//var bodyParserEncoder = parserObject.urlencoded({ extended: false });
 
 // pages
 app.get("/login", (req, res) =>

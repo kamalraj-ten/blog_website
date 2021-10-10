@@ -1,30 +1,54 @@
 <title>Blog main page</title>
-<header>
-    <div class="container d-flex flex-row-reverse justify-content-between align-items-center">
-        <div class="">
-            <input type="search" placeholder="search box"> 
+<script src="../scripts/mainpageScript.js"></script>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Blog Website</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Bloger Suggestion</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Bloger Recommendation</a></li>
+        </ul>
+        <form class="d-inline-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="nav-item dropdown">
+            <img alt="profpic" src="..." class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"/>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><h4 class="dropdown-item text-center disabled text-dark" id="username" aria-readonly="true">{{username}}</h4>
+                    <p class="text-center disabled text-dark" id="email" aria-readonly="true">{{email}}</p>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Create Blog</a></li>
+                <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
         </div>
-        <div>
-            <h1>Blog Home</h1>
-        </div>
-        <div class="d-inline">
-            <picture><img src="../icons/" alt="profile pic"></picture>
-        </div>
-    </div>
-</header>
-<div class="container">
-    <div class ="d-flex flex-row-reverse justify-content-around">
-        <span><button class="btn btn-primary" onclick="location.href = '#'">Logout</button></span>
-        <span><button class="btn btn-primary" onclick="location.href = '#'">Create</button></span>
-        <span><button class="btn btn-primary" onclick="location.href = '#'">Blog reccomendation</button></span>
-        <span><button class="btn btn-primary" onclick="location.href = '#'">Blogger suggestion</button></span>
-    </div>
-</div>
+  </div>
+</nav>
 <section class="container">
-    <div><h2>{{username}}</h2></div>
-    <div class="row row-cols-3">
-        {{#each blogs}}
-            <div class="col">{{this.title}}</div>
-        {{/each}}
+    <div class="display-2 mt-4"><h2>Blogs I Wrote</h2></div>
+    <div class="row row-cols-3 ml-1">
+        {{#if emtBlogsList}}
+            <div class="container w-100 border border-info text-center" style="padding: 15%;">
+                <h4>No Blogs Written!</h4>
+                <h3 class="help-block">Click the profile picture and select 'create blog' option to create a new blog</h3>
+            </div>
+        {{else}}
+            {{#each blogsList}}
+            <div class="col-lg-4 card m-1 border border-info" style="width: 32%;">
+                <div class="card-body">
+                    <h5 class="card-title" id="blogTitle">{{this.title}}</h5>
+                    <p class="card-text">{{this.subject}}</p>
+                    <p class="d-none" id="blogID">{{this.blog_id}}</p>
+                    <a onclick="dispBlog()" class="btn btn-primary">Read Blog</a>
+                </div>
+            </div>
+            {{/each}}
+        {{/if}}
     </div>
 </section>

@@ -40,10 +40,11 @@ const getUserDetail = async (email_id) => {
     );
     //console.log(result);
     var row = result.rows[0];
-    delete row["password"];
+    // console.log(row);
+    //delete row["password"];
     return row;
   } catch (e) {
-    console.log(e.stack);
+    console.log("catch ",e.stack);
     return null;
   }
 };
