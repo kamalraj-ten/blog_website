@@ -1,4 +1,5 @@
 <title>Blog main page</title>
+<script src="../scripts/mainpageScript.js"></script>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Blog Website</a>
@@ -18,7 +19,9 @@
         <div class="nav-item dropdown">
             <img alt="profpic" src="..." class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"/>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><h4 class="dropdown-item text-center disabled text-dark">{{username}}</h4></li>
+                <li><h4 class="dropdown-item text-center disabled text-dark" id="username" aria-readonly="true">{{username}}</h4>
+                    <p class="text-center disabled text-dark" id="email" aria-readonly="true">{{email}}</p>
+                </li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li><a class="dropdown-item" href="#">Create Blog</a></li>
@@ -39,9 +42,10 @@
             {{#each blogsList}}
             <div class="col-lg-4 card m-1 border border-info" style="width: 32%;">
                 <div class="card-body">
-                    <h5 class="card-title">{{this.title}}</h5>
+                    <h5 class="card-title" id="blogTitle">{{this.title}}</h5>
                     <p class="card-text">{{this.subject}}</p>
-                    <a href="#" class="btn btn-primary">Read Blog</a>
+                    <p class="d-none" id="blogID">{{this.blog_id}}</p>
+                    <a onclick="dispBlog()" class="btn btn-primary">Read Blog</a>
                 </div>
             </div>
             {{/each}}

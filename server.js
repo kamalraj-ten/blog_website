@@ -42,7 +42,7 @@ app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
 app.get("/blogHome/:email_id", async (req,res)=>{
-  let data = {username:" ",blogsList: [],emtBlogsList:true};
+  let data = {username:" ",blogsList: [],emtBlogsList:true,email:req.params.email_id};
   const tempdat = await Database.getUserDetail(req.params.email_id);
   let blogs = await Database.getBlogByEmail(req.params.email_id);
   if(tempdat!=null){
@@ -55,6 +55,11 @@ app.get("/blogHome/:email_id", async (req,res)=>{
   }else{
     res.end("");
   }
+});
+
+app.get("/blog/:blog_id", async(req,res)=>{
+  let blog = await Database.getBlogById(req.params.blog_id);
+  res.end(JSON.stringify(blog));
 });
 
 app.get("/blog_suggestions/:email_id", async (req, res) => {
