@@ -111,7 +111,6 @@ app.get("/sign_up", (req, res) =>
 );
 
 app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
-app.get("/blog/:id", (req, res) => res.send(req.params.id));
 
 // api's
 // database api functions
