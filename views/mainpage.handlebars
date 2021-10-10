@@ -28,16 +28,23 @@
   </div>
 </nav>
 <section class="container">
-    <div><h2>Blogs I Wrote</h2></div>
+    <div class="display-2 mt-4"><h2>Blogs I Wrote</h2></div>
     <div class="row row-cols-3 ml-1">
-        {{#each blogs}}
-            <div class="col-lg-4 card m-1" style="width: 32%;">
+        {{#if emtBlogsList}}
+            <div class="container w-100 border border-info text-center" style="padding: 15%;">
+                <h4>No Blogs Written!</h4>
+                <h3 class="help-block">Click the profile picture and select 'create blog' option to create a new blog</h3>
+            </div>
+        {{else}}
+            {{#each blogsList}}
+            <div class="col-lg-4 card m-1 border border-info" style="width: 32%;">
                 <div class="card-body">
                     <h5 class="card-title">{{this.title}}</h5>
                     <p class="card-text">{{this.subject}}</p>
                     <a href="#" class="btn btn-primary">Read Blog</a>
                 </div>
             </div>
-        {{/each}}
+            {{/each}}
+        {{/if}}
     </div>
 </section>

@@ -4,7 +4,6 @@ const path = require("path");
 const Database = require("./database");
 const Analytics = require("./analytics");
 const exphbs = require("express-handlebars");
-const { send } = require("process");
 
 const categories = [
   "Brands",
@@ -42,20 +41,19 @@ app.listen(PORT);
 app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
-app.get("/blogHome/:email_id",async (req, res) => {
-  var data = {
-    username: "",
-    blogs: []
-  };
-  const blogs = Database.getBlogByEmail(req.params.email_id)
-  const username = Database.getUserDetail(req.params.email_id)["username"];
-  console.log(data);
-  if(blogs){
-    data.blogs="No Blogs written";
-    res.render("noContentMainpage",data);
-  }else{
-    data.blogs = blogs;
+app.get("/blogHome/:email_id", async (req,res)=>{
+  let data = {username:" ",blogsList: [],emtBlogsList:true};
+  const tempdat = await Database.getUserDetail(req.params.email_id);
+  let blogs = await Database.getBlogByEmail(req.params.email_id);
+  if(tempdat!=null){
+    data.username = tempdat["username"];
+    if(blogs.length!=0){
+      data.emtBlogsList=false;
+      data.blogsList=blogs;
+    }
     res.render("mainpage",data);
+  }else{
+    res.end("");
   }
 });
 
@@ -98,7 +96,6 @@ app.get("/user_suggestions/:email_id", async (req, res) => {
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//var bodyParserEncoder = parserObject.urlencoded({ extended: false });
 
 // pages
 app.get("/login", (req, res) =>
@@ -107,7 +104,7 @@ app.get("/login", (req, res) =>
 app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
-// app.get("/home", (req, res) => res.send("home page"));
+
 app.get("/user/:id", (req, res) => res.send("user email_id: " + req.params.id));
 app.get("/blog/:id", (req, res) => res.send(req.params.id));
 

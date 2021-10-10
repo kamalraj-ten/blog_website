@@ -25,7 +25,7 @@ async function handleSubmit(event) {
   btn.style.color = "white"
   if (validity) {
     localStorage.setItem("email_id", email.value);
-    window.location.href = "/home";
+    window.location.href = "/blogHome/"+email.value;
   } else {
     alert("Invalid credentials");
   }
