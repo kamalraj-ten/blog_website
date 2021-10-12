@@ -239,6 +239,20 @@ app.post("/follow_user", async (req, res) => {
   }
 });
 
+// tracking related api
+app.get("/tracking/:email_id", async (req, res) => {
+  const result = await Database.updateTracking(req.params.email_id);
+  res.json({ result });
+});
+
+app.get("/tracking/:email_id/:days", async (req, res) => {
+  const result = await Database.getTracking(
+    req.params.email_id,
+    req.params.days
+  );
+  res.json(result);
+});
+
 // testing
 app.post("/testing", (req, res) => {
   console.log(req.body);

@@ -44,7 +44,7 @@ const getUserDetail = async (email_id) => {
     //delete row["password"];
     return row;
   } catch (e) {
-    console.log("catch ",e.stack);
+    console.log("catch ", e.stack);
     return null;
   }
 };
@@ -447,6 +447,30 @@ const updateTracking = async (email_id) => {
   }
 };
 
+const getTracking = async (email_id, days) => {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: { rejectUnauthorized: false },
+  });
+  try {
+    await client.connect();
+    const res = await client.query(
+      "SELECT date, hours_used FROM tracking WHERE email_id = $1",
+      [email_id]
+    );
+    client.end();
+    var result = res.rows;
+    if (res.rows.length > days) {
+      result = [];
+      for (var i = 0; i < days; ++i) result.push(res.rows[i]);
+    }
+    return result;
+  } catch (e) {
+    console.log(e.stack);
+    return [];
+  }
+};
+
 const general = async () => {
   var client = new pg.Client({
     connectionString: conString,
@@ -481,4 +505,5 @@ module.exports = {
   getBlogCount,
   isFollowing,
   updateTracking,
+  getTracking,
 };

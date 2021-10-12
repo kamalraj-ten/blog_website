@@ -24,3 +24,55 @@ async function follow(email_id) {
     alert("cannot follow");
   }
 }
+
+async function loadChart() {
+  var canvas = document.getElementById("myChart");
+  if (!canvas) return;
+  var ctx = canvas.getContext("2d");
+
+  var xValues = [];
+  var yValues = [];
+
+  try {
+    const email_id = localStorage.getItem("email_id");
+    const result = await fetch("/tracking/" + email_id + "/10");
+    const values = await result.json();
+    if (values.length === 0) {
+      xValues = [new Date().getDate()];
+      yValues = [1];
+    }
+    for (var i = 0; i < values.length; ++i) {
+      xValues.push(new Date(values[i]["date"]).getDate());
+      yValues.push(values[i]["hours_used"]);
+    }
+  } catch (e) {
+    console.log(e.stack);
+    xValues = [];
+    yValues = [];
+  }
+  console.log(xValues, yValues);
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          fill: false,
+          lineTension: 0,
+          backgroundColor: "rgba(0,0,255,1.0)",
+          borderColor: "rgba(0,0,255,0.1)",
+          data: yValues,
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+    },
+  });
+}
+
+// calling addtracking
+async function updateTracking() {
+  const email_id = await localStorage.getItem("email_id");
+  await fetch("/tracking/" + email_id);
+}
