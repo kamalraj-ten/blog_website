@@ -8,14 +8,14 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link" href="/blogHome/{{email}}">Blog Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Bloger Suggestion</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Bloger Recommendation</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Blog Recommendation</a></li>
         </ul>
-        <form class="d-inline-flex">
+        <form class="d-flex">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <div class="nav-item dropdown">
-            <img alt="profpic" src="..." class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"/>
+        <div class="nav-item dropdown ms-2 d-inline">
+            <img alt="profpic" class="float-right d-inline mt-0 mp-0" src="../icons/user.png" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 30px;"/>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><h4 class="dropdown-item text-center disabled text-dark" id="username" aria-readonly="true">{{username}}</h4>
                     <p class="text-center disabled text-dark" id="email" aria-readonly="true">{{email}}</p>
@@ -30,13 +30,25 @@
 </nav>
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between mb-0">
+    <div class="d-flex justify-content-between mb-0 align-items-center">
         <div class="h1">{{blog.title}}</div>
+        {{#if owner}}
+            <div class="dropdown ">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown button
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </div>
+        {{/if}}
     </div>
     <div class="text-muted mt-0">{{blog.subject}}</div>
     <div class="d-flex justify-content-between">
-        <div class="border">Author: {{blog.email_id}}</div>
-        <div class="border">created: {{blog.date}}</div>
+        <div>Author: {{blog.email_id}}</div>
+        <div>created: {{blog.date}}</div>
     </div>
     <div class="border border-muted border-3 rounded mt-3 p-1">
         <p>{{blog.context}}
@@ -48,7 +60,7 @@
     <div>Comments</div>
     <form class="form-group">
     <input type="text" id="comment" class="from-control border border-muted border-2 w-100" placeholder="Click to add comment">
-    <input type="button" onclick="createComment()"x`>
+    <input type="button" class="d-none btn btn-outline-success mt-1" onclick="createComment()" value="Post Comment">
     </form>
     <div class="list-group list-group-flush">
         {{#if emtCommentsList}}
@@ -59,7 +71,9 @@
             {{#each commentsList}}
                 <li class="list-group-item m-2">
                     <div>
-                        <b>{{this.email_id}}</b><br>
+                        <b>{{this.email_id}}  </b>
+                        <div class="muted d-inline">{{this.date}}</div>
+                        <br>
                         <div class="ps-3">{{this.comment}}</div>
                     </div>
                 </li>

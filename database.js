@@ -56,7 +56,7 @@ const getBlogComments = async (blog_id)=> {
   let result;
   try {
     await client.connect();
-    result = await client.query("SELECT email_id, comment FROM comments WHERE blog_id = $1",[blog_id]);
+    result = await client.query("SELECT email_id, comment, date FROM comments WHERE blog_id = $1",[blog_id]);
   } catch (err) {
     console.log(err.stack);
   }
@@ -270,7 +270,7 @@ const followUser = async (follower, following) => {
       follower,
       following,
     ]);
-    client.close();
+    client.end();
     return true;
   } catch (e) {
     console.log(e.stack);

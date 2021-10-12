@@ -8,16 +8,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog Home</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/blogHome/{{email}}">Blog Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Bloger Suggestion</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Bloger Recommendation</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Blog Recommendation</a></li>
         </ul>
         <form class="d-inline-flex">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <div class="nav-item dropdown">
-            <img alt="profpic" src="..." class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"/>
+        <div class="nav-item dropdown ms-2">
+            <img alt="profpic" class="float-right d-inline mt-0 mp-0" src="../icons/user.png" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 30px;"/>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><h4 class="dropdown-item text-center disabled text-dark" id="username" aria-readonly="true">{{username}}</h4>
                     <p class="text-center disabled text-dark" id="email" aria-readonly="true">{{email}}</p>

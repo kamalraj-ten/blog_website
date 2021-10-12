@@ -79,17 +79,26 @@ app.get("/blog/:id-:email_id-:username", async (req, res) => {
   let blogData = await Database.getBlogById(req.params.id);
   let render_data = {
     username:req.params.username,
+    owner:false,
     email:trg_email,
     blog:blogData,
     emtCommentsList:false,
     commentsList:[]
   };
+  if(blogData.email_id === trg_email){
+    render_data.owner = true;
+  }
   render_data.commentsList = await Database.getBlogComments(req.params.id);
   if(render_data.commentsList.length===0){
     render_data.emtCommentsList=true;
+  }else{
+    render_data.commentsList.forEach(comment => {
+      comment.date = comment.date.toUTCString().substring(5,17);
+      return comment;
+    })
   }
-  blogData.date=blogData.date.toUTCString().substring(5,17)
-  res.render("viewMyBlog",render_data);
+  blogData.date=blogData.date.toUTCString().substring(5,17);
+  res.render("viewBlog",render_data);
 });
 
 app.get("/blog_suggestions/:email_id", async (req, res) => {
