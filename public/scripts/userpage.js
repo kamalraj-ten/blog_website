@@ -6,7 +6,7 @@ async function follow(email_id) {
     alert("Sorry you cannot follow yourself");
     return;
   }
-  const result = await fetch("/follow_user", {
+  const res = await fetch("/follow_user", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -16,16 +16,18 @@ async function follow(email_id) {
       following: email_id,
     }),
   });
+  const result = await res.json();
+  console.log(result);
 
   if (result.validity) {
-    ele.following = true;
+    //ele.following = true;
     location.reload();
   } else {
     alert("cannot follow");
   }
 }
 
-async function loadChart() {
+async function loadChart(email_id) {
   var canvas = document.getElementById("myChart");
   if (!canvas) return;
   var ctx = canvas.getContext("2d");
@@ -34,7 +36,6 @@ async function loadChart() {
   var yValues = [];
 
   try {
-    const email_id = localStorage.getItem("email_id");
     const result = await fetch("/tracking/" + email_id + "/10");
     const values = await result.json();
     if (values.length === 0) {
@@ -72,7 +73,9 @@ async function loadChart() {
 }
 
 // calling addtracking
-async function updateTracking() {
-  const email_id = await localStorage.getItem("email_id");
-  await fetch("/tracking/" + email_id);
-}
+// async function updateTracking() {
+//   const email_id = await localStorage.getItem("email_id");
+//   await fetch("/tracking/" + email_id);
+// }
+
+// increases even if others see

@@ -78,27 +78,27 @@ app.get("/blog/:id-:email_id-:username", async (req, res) => {
   let trg_email = req.params.email_id;
   let blogData = await Database.getBlogById(req.params.id);
   let render_data = {
-    username:req.params.username,
-    owner:false,
-    email:trg_email,
-    blog:blogData,
-    emtCommentsList:false,
-    commentsList:[]
+    username: req.params.username,
+    owner: false,
+    email: trg_email,
+    blog: blogData,
+    emtCommentsList: false,
+    commentsList: [],
   };
-  if(blogData.email_id === trg_email){
+  if (blogData.email_id === trg_email) {
     render_data.owner = true;
   }
   render_data.commentsList = await Database.getBlogComments(req.params.id);
-  if(render_data.commentsList.length===0){
-    render_data.emtCommentsList=true;
-  }else{
-    render_data.commentsList.forEach(comment => {
-      comment.date = comment.date.toUTCString().substring(5,17);
+  if (render_data.commentsList.length === 0) {
+    render_data.emtCommentsList = true;
+  } else {
+    render_data.commentsList.forEach((comment) => {
+      comment.date = comment.date.toUTCString().substring(5, 17);
       return comment;
-    })
+    });
   }
-  blogData.date=blogData.date.toUTCString().substring(5,17);
-  res.render("viewBlog",render_data);
+  blogData.date = blogData.date.toUTCString().substring(5, 17);
+  res.render("viewBlog", render_data);
 });
 
 app.get("/blog_suggestions/:email_id", async (req, res) => {
@@ -158,6 +158,7 @@ app.get("/user/:id-:email_id", async (req, res) => {
   const isFollowing =
     (await Database.isFollowing(req.params.email_id, req.params.id)) == 1;
   const userBlogs = await Database.getBlogByEmail(req.params.id);
+  const chart_load_function = 'loadChart("' + req.params.id + '")';
   const blogs = [];
   for (var i = 0; i < userBlogs.length; ++i) {
     blogs.push({
@@ -176,6 +177,7 @@ app.get("/user/:id-:email_id", async (req, res) => {
     isFollowing,
     blog_count,
     blogs,
+    chart_load_function,
   });
 });
 //app.get("/blog/:id", (req, res) => res.send(req.params.id));
@@ -254,7 +256,7 @@ app.post("/follow_user", async (req, res) => {
   const { follower, following } = req.body;
   try {
     await Database.followUser(follower, following);
-    res.send(true);
+    res.json({ validity: true });
   } catch (e) {
     console.log(e.stack);
     res.json({ validity: false });
