@@ -38,16 +38,53 @@ const getUserDetail = async (email_id) => {
       "SELECT * FROM users WHERE email_id = $1",
       [email_id]
     );
-    //console.log(result);
     var row = result.rows[0];
-    // console.log(row);
-    //delete row["password"];
     return row;
   } catch (e) {
     console.log("catch ",e.stack);
     return null;
   }
 };
+
+const getBlogComments = async (blog_id)=> {
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+  let result;
+  try {
+    await client.connect();
+    result = await client.query("SELECT email_id, comment FROM comments WHERE blog_id = $1",[blog_id]);
+  } catch (err) {
+    console.log(err.stack);
+  }
+  client.end();
+  return result.rows;
+}
+
+const putCommentOnBlog = async (blog_id,email_id,comment)=>{
+  var client = new pg.Client({
+    connectionString: conString,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+  let result;
+  try {
+    await client.connect();
+    result = await client.query("INSERT INTO comments VALUES($1,$2,$3,$4)", [
+      email_id,
+      blog_id,
+      comment,
+      new Date()
+    ]);
+  } catch (err) {
+    console.log(err.stack);
+  }
+  client.end();
+}
 
 const checkUser = async (email_id, password) => {
   var client = new pg.Client({
@@ -481,4 +518,6 @@ module.exports = {
   getBlogCount,
   isFollowing,
   updateTracking,
+  getBlogComments,
+  putCommentOnBlog,
 };
