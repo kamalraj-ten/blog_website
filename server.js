@@ -59,6 +59,8 @@ app.get("/blogHome/:email_id", async (req, res) => {
     blogsList: [],
     emtBlogsList: true,
     email: req.params.email_id,
+    user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
+    blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
   };
   const tempdat = await Database.getUserDetail(req.params.email_id);
   let blogs = await Database.getBlogByEmail(req.params.email_id);
@@ -106,10 +108,17 @@ app.get("/blog_suggestions/:email_id", async (req, res) => {
   var suggestions = [];
   for (var i = 0; i < blogSuggestions.length; ++i) {
     const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
+    const user = await Database.getUserDetail(blog.email_id);
     suggestions.push({
       title: blog.title,
       subject: blog.subject,
-      link: "/blog/" + blog.blog_id,
+      link:
+        "/blog/" +
+        blog.blog_id +
+        "-" +
+        req.params.email_id +
+        "-" +
+        user.username,
       action: "Open",
     });
   }
@@ -127,7 +136,7 @@ app.get("/user_suggestions/:email_id", async (req, res) => {
     suggestions.push({
       title: user.username,
       subject: user.email_id,
-      link: "/user/" + user.email_id,
+      link: "/user/" + user.email_id + "-" + req.params.email_id,
       action: "See",
     });
   }
@@ -149,6 +158,7 @@ app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
 app.get("/home", (req, res) => res.send("home page"));
+
 app.get("/user/:id-:email_id", async (req, res) => {
   // email_id is the current user email_id
   const user = await Database.getUserDetail(req.params.id);
@@ -178,6 +188,7 @@ app.get("/user/:id-:email_id", async (req, res) => {
     blog_count,
     blogs,
     chart_load_function,
+    user_email: req.params.email_id,
   });
 });
 //app.get("/blog/:id", (req, res) => res.send(req.params.id));
