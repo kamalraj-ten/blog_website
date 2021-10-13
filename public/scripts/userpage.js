@@ -72,6 +72,11 @@ async function loadChart(email_id) {
   });
 }
 
+function logout() {
+  localStorage.setItem("email_id", null);
+  window.location.href = "/login";
+}
+
 // calling addtracking
 // async function updateTracking() {
 //   const email_id = await localStorage.getItem("email_id");
