@@ -1,6 +1,7 @@
 const express = require('express')
 const Database = require('../db/database')
 const router = express.Router()
+const categories = Database.categories;
 
 router.post("/sign_in", async (req, res) => {
     //console.log(req.body);

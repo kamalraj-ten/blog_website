@@ -4,7 +4,6 @@ const path = require("path");
 const Database = require("./db/database");
 const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
-const categories = Database.categories;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
