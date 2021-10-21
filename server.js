@@ -28,7 +28,7 @@ const categories = [
   "World News",
 ];
 
-//Database.getTime();
+Database.getTime();
 // Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
 //   console.log(suggestedBlogs)
 // );
