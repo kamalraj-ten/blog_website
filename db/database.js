@@ -1,5 +1,28 @@
 var newClient = require('./newClient')
 
+const categories = [
+  "Brands",
+  "C",
+  "C++",
+  "Countries",
+  "Entertainment",
+  "Flutter",
+  "Government",
+  "Movies",
+  "Law",
+  "Locations",
+  "Lifestyle",
+  "Medicine",
+  "Memes",
+  "Music",
+  "Politics",
+  "Social services",
+  "Sports",
+  "Technology",
+  "Travel",
+  "World News",
+];
+
 const getTime = () => {
   let client = newClient()
   client.connect(function (err) {
@@ -448,4 +471,5 @@ module.exports = {
   getTracking,
   getBlogComments,
   putCommentOnBlog,
+  categories,
 };

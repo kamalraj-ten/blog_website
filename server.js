@@ -1,67 +1,46 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const Database = require("./database");
-const Analytics = require("./analytics");
+const Database = require("./db/database");
+const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
-
-const categories = [
-  "Brands",
-  "C",
-  "C++",
-  "Countries",
-  "Entertainment",
-  "Flutter",
-  "Government",
-  "Movies",
-  "Law",
-  "Locations",
-  "Lifestyle",
-  "Medicine",
-  "Memes",
-  "Music",
-  "Politics",
-  "Social services",
-  "Sports",
-  "Technology",
-  "Travel",
-  "World News",
-];
-
-Database.getTime();
-// Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
-//   console.log(suggestedBlogs)
-// );
+const categories = Database.categories;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
+
+app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 var hbs = exphbs.create({
   helpers: {
     followButton: (ele) => {
       if (!ele.isFollowing)
-        return (
-          "<button onclick=\"follow('" +
-          ele.email_id +
-          '\')" class="btn btn-primary">Follow</button>'
+      return (
+        "<button onclick=\"follow('" +
+        ele.email_id +
+        '\')" class="btn btn-primary">Follow</button>'
         );
-      else return '<span class="badge bg-secondary">following</span>';
+        else return '<span class="badge bg-secondary">following</span>';
+      },
     },
-  },
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-
+  
+  
 app.get("/blogHome/:email_id", async (req, res) => {
-  let data = {
-    username: " ",
-    blogsList: [],
-    emtBlogsList: true,
-    email: req.params.email_id,
-    user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
-    blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
-  };
+    let data = {
+      username: " ",
+      blogsList: [],
+      emtBlogsList: true,
+      email: req.params.email_id,
+      user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
+      blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
+    };
   const tempdat = await Database.getUserDetail(req.params.email_id);
   let blogs = await Database.getBlogByEmail(req.params.email_id);
   if (tempdat != null) {
@@ -146,10 +125,6 @@ app.get("/user_suggestions/:email_id", async (req, res) => {
   });
 });
 
-app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
 // pages
 app.get("/login", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "login.html"))
@@ -191,7 +166,6 @@ app.get("/user/:id-:email_id", async (req, res) => {
     user_email: req.params.email_id,
   });
 });
-//app.get("/blog/:id", (req, res) => res.send(req.params.id));
 
 // api's
 // database api functions
@@ -248,20 +222,6 @@ app.get("/database/get_user_detail", async (req, res) => {
   res.send(user);
 });
 
-//blog related api
-app.get("/blog/get_blog_by_id", async (req, res) => {
-  const blog = await Database.getBlogById(req.body["blog_id"]);
-  res.send(blog);
-});
-app.get("/blog/get_blog_by_title", async (req, res) => {
-  const blogs = await Database.getBlogByTitle(req.body["title"]);
-  res.send(blogs);
-});
-app.get("/blog/get_blog_by_email", async (req, res) => {
-  const blogs = await Database.getBlogByEmail(req.body["email_id"]);
-  res.send(blogs);
-});
-
 // follow api
 app.post("/follow_user", async (req, res) => {
   const { follower, following } = req.body;
@@ -284,13 +244,26 @@ app.get("/tracking/:email_id/:days", async (req, res) => {
   const result = await Database.getTracking(
     req.params.email_id,
     req.params.days
-  );
-  res.json(result);
+    );
+    res.json(result);
 });
 
-// testing
-app.post("/testing", (req, res) => {
-  console.log(req.body);
-  //console.log(req);
-  res.json({ response: "hello" });
-});
+
+//Database.getTime();
+// Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
+//   console.log(suggestedBlogs)
+// );
+
+//blog related api
+// app.get("/blog/get_blog_by_id", async (req, res) => {
+//   const blog = await Database.getBlogById(req.body["blog_id"]);
+//   res.send(blog);
+// });
+// app.get("/blog/get_blog_by_title", async (req, res) => {
+//   const blogs = await Database.getBlogByTitle(req.body["title"]);
+//   res.send(blogs);
+// });
+// app.get("/blog/get_blog_by_email", async (req, res) => {
+//   const blogs = await Database.getBlogByEmail(req.body["email_id"]);
+//   res.send(blogs);
+// });
