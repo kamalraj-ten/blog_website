@@ -4,6 +4,7 @@ const path = require("path");
 const Database = require("./db/database");
 const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
+const auth = require('./db/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,27 +31,36 @@ var hbs = exphbs.create({
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
   
-  
-app.get("/blogHome/:email_id", async (req, res) => {
-    let data = {
-      username: " ",
-      blogsList: [],
-      emtBlogsList: true,
-      email: req.params.email_id,
-      user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
-      blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
-    };
-  const tempdat = await Database.getUserDetail(req.params.email_id);
-  let blogs = await Database.getBlogByEmail(req.params.email_id);
-  if (tempdat != null) {
-    data.username = tempdat["username"];
-    if (blogs.length != 0) {
-      data.emtBlogsList = false;
-      data.blogsList = blogs;
+app.get('/', (req,res) =>{
+  res.sendFile(path.join(__dirname,'public','login.html'),err=>{
+    console.log(err)
+  })
+})
+
+app.get("/blogHome/:email_id-:token", async (req, res) => {
+  let data = {
+    username: " ",
+    blogsList: [],
+    emtBlogsList: true,
+    email: req.params.email_id,
+    user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
+    blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
+  };
+  if(auth.verifyToken(req.params.token,req.params.email_id)){
+    const tempdat = await Database.getUserDetail(req.params.email_id);
+    let blogs = await Database.getBlogByEmail(req.params.email_id);
+    if (tempdat != null) {
+      data.username = tempdat["username"];
+      if (blogs.length != 0) {
+        data.emtBlogsList = false;
+        data.blogsList = blogs;
+      }
+      res.render("mainpage", data);
+    } else {
+      res.end("");
     }
-    res.render("mainpage", data);
-  } else {
-    res.end("");
+  }else{
+    res.redirect('/login');
   }
 });
 
@@ -131,7 +141,6 @@ app.get("/login", (req, res) =>
 app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
-app.get("/home", (req, res) => res.send("home page"));
 
 app.get("/user/:id-:email_id", async (req, res) => {
   // email_id is the current user email_id
@@ -184,6 +193,9 @@ app.post("/follow_user", async (req, res) => {
   }
 });
 
+app.get('*', function(req, res){
+  res.redirect('/login')
+})
 //Database.getTime();
 // Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
 //   console.log(suggestedBlogs)

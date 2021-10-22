@@ -1,16 +1,23 @@
 const express = require('express')
 const Database = require('../db/database')
 const router = express.Router()
+const auth = require('../db/auth')
 const categories = Database.categories;
 
 router.post("/sign_in", async (req, res) => {
-    //console.log(req.body);
     const validity = await Database.checkUser(
       req.body["email_id"],
       req.body["password"]
     );
-    //console.log(validity);
-    res.json({ validity });
+    if(validity===true){
+      res.json({
+        validity,
+        'token':auth.createNewtoken({email_id:req.body["email_id"],time:new Date()})
+      })
+    }
+    else{
+      res.json({ validity });
+    }
 });
 
 router.post("/sign_up", async (req, res) => {

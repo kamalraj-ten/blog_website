@@ -99,10 +99,8 @@ const checkUser = async (email_id, password) => {
       "SELECT email_id, password FROM users WHERE email_id = $1",
       [email_id]
     );
-    //console.log("result ", result);
     if (result.rows[0]["password"].toString() === password.toString())
       validity = true;
-    //console.log(result.rows[0]["password"], password);
   } catch (e) {
     console.log(e.stack);
   }
