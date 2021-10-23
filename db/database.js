@@ -1,15 +1,30 @@
-var pg = require("pg");
+var newClient = require('./newClient')
 
-//var conString = process.env.DB_URI; //Can be found in the Details page
-var conString = process.env.DATABASE_URL;
+const categories = [
+  "Brands",
+  "C",
+  "C++",
+  "Countries",
+  "Entertainment",
+  "Flutter",
+  "Government",
+  "Movies",
+  "Law",
+  "Locations",
+  "Lifestyle",
+  "Medicine",
+  "Memes",
+  "Music",
+  "Politics",
+  "Social services",
+  "Sports",
+  "Technology",
+  "Travel",
+  "World News",
+];
 
 const getTime = () => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   client.connect(function (err) {
     if (err) {
       return console.error("could not connect to postgres", err);
@@ -19,19 +34,13 @@ const getTime = () => {
         return console.error("error running query", err);
       }
       console.log(result.rows[0].theTime);
-      // >> output: 2018-08-23T14:02:57.117Z
       client.end();
     });
   });
 };
 
 const getUserDetail = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const result = await client.query(
@@ -47,12 +56,7 @@ const getUserDetail = async (email_id) => {
 };
 
 const getBlogComments = async (blog_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   let result;
   try {
     await client.connect();
@@ -68,12 +72,7 @@ const getBlogComments = async (blog_id) => {
 };
 
 const putCommentOnBlog = async (blog_id, email_id, comment) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   let result;
   try {
     await client.connect();
@@ -88,12 +87,7 @@ const putCommentOnBlog = async (blog_id, email_id, comment) => {
 };
 
 const checkUser = async (email_id, password) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
 
   var validity = false;
 
@@ -103,10 +97,8 @@ const checkUser = async (email_id, password) => {
       "SELECT email_id, password FROM users WHERE email_id = $1",
       [email_id]
     );
-    //console.log("result ", result);
     if (result.rows[0]["password"].toString() === password.toString())
       validity = true;
-    //console.log(result.rows[0]["password"], password);
   } catch (e) {
     console.log(e.stack);
   }
@@ -115,12 +107,7 @@ const checkUser = async (email_id, password) => {
 };
 
 const getBlogById = async (blog_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE blog_id = $1", [
@@ -135,12 +122,7 @@ const getBlogById = async (blog_id) => {
 };
 
 const getBlogByTitle = async (title) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE title LIKE $1", [
@@ -155,12 +137,7 @@ const getBlogByTitle = async (title) => {
 };
 
 const getBlogByEmail = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+  let client = newClient()
   try {
     await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE email_id = $1", [
@@ -184,10 +161,7 @@ const signUp = async (
   interests,
   password
 ) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   var resultMsg = { error: "", credentialError: [], success: false };
   try {
     client.connect();
@@ -242,10 +216,7 @@ const createBlog = async (
   email_id,
   subject
 ) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     await client.query(
@@ -261,10 +232,7 @@ const createBlog = async (
 };
 
 const followUser = async (follower, following) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     await client.query("INSERT INTO followers VALUES ($1, $2)", [
@@ -280,10 +248,7 @@ const followUser = async (follower, following) => {
 };
 
 const getFollowingCount = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -299,10 +264,7 @@ const getFollowingCount = async (email_id) => {
 };
 
 const getFollowerCount = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -318,10 +280,7 @@ const getFollowerCount = async (email_id) => {
 };
 
 const LikeBlog = async (email_id, blog_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     await client.query("INSERT INTO bloglikes VALUES ($1, $2)", [
@@ -337,10 +296,7 @@ const LikeBlog = async (email_id, blog_id) => {
 };
 
 const getBlogLikeCount = async (blog_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -356,10 +312,7 @@ const getBlogLikeCount = async (blog_id) => {
 };
 
 const addBlogView = async (email_id, blog_id, date = new Date()) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     await client.query("INSERT INTO blogviews VALUES ($1,$2,$3)", [
@@ -376,10 +329,7 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
 };
 
 const getBlogCategories = async () => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query("SELECT blog_id, categories FROM blogs");
@@ -392,10 +342,7 @@ const getBlogCategories = async () => {
 };
 
 const getUserInterests = async () => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query("SELECT email_id, interests FROM users");
@@ -408,10 +355,7 @@ const getUserInterests = async () => {
 };
 
 const getBlogCount = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -428,10 +372,7 @@ const getBlogCount = async (email_id) => {
 };
 
 const isFollowing = async (email_id, following_email) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -448,10 +389,7 @@ const isFollowing = async (email_id, following_email) => {
 
 // call it during login and logout
 const updateTracking = async (email_id) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     // check if the log already present for the day
@@ -486,10 +424,7 @@ const updateTracking = async (email_id) => {
 };
 
 const getTracking = async (email_id, days) => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
+  let client = newClient()
   try {
     await client.connect();
     const res = await client.query(
@@ -506,20 +441,6 @@ const getTracking = async (email_id, days) => {
   } catch (e) {
     console.log(e.stack);
     return [];
-  }
-};
-
-const general = async () => {
-  var client = new pg.Client({
-    connectionString: conString,
-    ssl: { rejectUnauthorized: false },
-  });
-  try {
-    await client.connect();
-    client.end();
-  } catch (e) {
-    console.log(e.stack);
-    return -1;
   }
 };
 
@@ -546,4 +467,5 @@ module.exports = {
   getTracking,
   getBlogComments,
   putCommentOnBlog,
+  categories,
 };

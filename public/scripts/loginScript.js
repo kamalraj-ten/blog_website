@@ -6,7 +6,6 @@ async function handleSubmit(event) {
   btn.innerHTML = "Signing in";
   btn.disabled = true;
   btn.style.color = "LightGrey";
-  console.log(email.value, pswd.value);
   const response = await fetch("/database/sign_in", {
     method: "POST",
     body: JSON.stringify({
@@ -17,13 +16,14 @@ async function handleSubmit(event) {
       "Content-Type": "application/json",
     },
   });
-  const { validity } = await response.json();
-  console.log(validity);
+  const { validity,token } = await response.json();
+  console.log(token);
   btn.innerHTML = "Sign in";
   btn.disabled = false;
   btn.style.color = "white";
   if (validity) {
     localStorage.setItem("email_id", email.value);
+    document.cookie = `token = ${token}; max-age = 10800; path=/;`
     await fetch("/tracking", {
       method: "POST",
       headers: {
@@ -31,7 +31,7 @@ async function handleSubmit(event) {
       },
       body: JSON.stringify({ email_id: email.value }),
     });
-    window.location.href = "/blogHome/" + email.value;
+    window.location.href = "/blogHome/" + email.value + '-' +token;
   } else {
     alert("Invalid credentials");
   }
