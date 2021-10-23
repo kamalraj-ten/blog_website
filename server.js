@@ -21,14 +21,14 @@ var hbs = exphbs.create({
   helpers: {
     followButton: (ele) => {
       if (!ele.isFollowing)
-      return (
-        "<button onclick=\"follow('" +
-        ele.email_id +
-        '\')" class="btn btn-primary">Follow</button>'
+        return (
+          "<button onclick=\"follow('" +
+          ele.email_id +
+          '\')" class="btn btn-primary">Follow</button>'
         );
-        else return '<span class="badge bg-secondary">following</span>';
-      },
+      else return '<span class="badge bg-secondary">following</span>';
     },
+  },
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
@@ -76,6 +76,8 @@ app.get("/blog/:id-:email_id-:username", async (req, res) => {
     blog: blogData,
     emtCommentsList: false,
     commentsList: [],
+    liked: false,
+    like_count: 0,
   };
   if (blogData.email_id === trg_email) {
     render_data.owner = true;
@@ -90,6 +92,10 @@ app.get("/blog/:id-:email_id-:username", async (req, res) => {
     });
   }
   blogData.date = blogData.date.toUTCString().substring(5, 17);
+
+  //like data
+  render_data.like_count = await Database.getBlogLikeCount(req.params.id);
+  render_data.liked = await Database.isLikedBlog(trg_email, req.params.id);
   res.render("viewBlog", render_data);
 });
 
@@ -178,10 +184,10 @@ app.get("/user/:id-:email_id", async (req, res) => {
 });
 
 //Database API routes
-app.use('/database',require(path.join(__dirname,'routes','databaseAPI')))
+app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")));
 
 //Tracking API routes
-app.use('/tracking',require(path.join(__dirname,'routes','trackingAPI')))
+app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")));
 
 // follow api
 app.post("/follow_user", async (req, res) => {
@@ -195,14 +201,36 @@ app.post("/follow_user", async (req, res) => {
   }
 });
 
-app.get('*', function(req, res){
-  res.redirect('/login')
-})
+app.get("*", function (req, res) {
+  res.redirect("/login");
+});
 //Database.getTime();
 // Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
 //   console.log(suggestedBlogs)
 // );
 
+// comment api
+app.post("/api/add_comment", async (req, res) => {
+  const { comment, blog_id, email_id, username } = req.body;
+  await Database.putCommentOnBlog(blog_id, email_id, comment);
+  res.redirect("/blog/" + blog_id + "-" + email_id + "-" + username);
+});
+app.post("/api/like", async (req, res) => {
+  const { liked, blog_id, email_id, username } = req.body;
+  if (liked === "true") {
+    await Database.removeBlogLike(email_id, blog_id);
+  } else {
+    await Database.LikeBlog(email_id, blog_id);
+  }
+  res.redirect("/blog/" + blog_id + "-" + email_id + "-" + username);
+});
+
+// testing
+app.post("/testing", (req, res) => {
+  console.log(req.body);
+  //console.log(req);
+  res.json({ response: "hello" });
+});
 //blog related api
 // app.get("/blog/get_blog_by_id", async (req, res) => {
 //   const blog = await Database.getBlogById(req.body["blog_id"]);

@@ -3,7 +3,7 @@ const similarity = require("compute-cosine-similarity");
 const Database = require("./database");
 
 function toVector(s) {
-  vector = [];
+  var vector = [];
   for (var i = 0; i < s.length; ++i) {
     vector.push(s[i]);
   }
