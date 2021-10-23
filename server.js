@@ -288,6 +288,13 @@ app.get("/tracking/:email_id/:days", async (req, res) => {
   res.json(result);
 });
 
+// comment api
+app.post("/api/add_comment", async (req, res) => {
+  const { comment, blog_id, email_id, username } = req.body;
+  await Database.putCommentOnBlog(blog_id, email_id, comment);
+  res.redirect("/blog/" + blog_id + "-" + email_id + "-" + username);
+});
+
 // testing
 app.post("/testing", (req, res) => {
   console.log(req.body);

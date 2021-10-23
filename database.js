@@ -77,12 +77,10 @@ const putCommentOnBlog = async (blog_id, email_id, comment) => {
   let result;
   try {
     await client.connect();
-    result = await client.query("INSERT INTO comments VALUES($1,$2,$3,$4)", [
-      email_id,
-      blog_id,
-      comment,
-      new Date(),
-    ]);
+    result = await client.query(
+      "INSERT INTO comments(email_id, blog_id, comment, date) VALUES($1,$2,$3,$4)",
+      [email_id, blog_id, comment, new Date()]
+    );
   } catch (err) {
     console.log(err.stack);
   }

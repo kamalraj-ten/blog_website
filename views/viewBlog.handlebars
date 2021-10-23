@@ -58,8 +58,11 @@
 
 <section class="container mt-5 mb-5">
     <div>Comments</div>
-    <form class="form-group">
-    <input type="text" id="comment" class="from-control border border-muted border-2 w-100" placeholder="Click to add comment">
+    <form class="form-group" method="post" action="/api/add_comment">
+    <input type="text" id="comment" class="from-control border border-muted border-2 w-100" placeholder="Click to add comment" name="comment">
+    <input type="hidden" name="blog_id" value={{blog.blog_id}}>
+    <input type="hidden" name="email_id" value={{email}}>
+    <input type="hidden" name="username" value={{username}}>
     <input type="button" class="d-none btn btn-outline-success mt-1" onclick="createComment()" value="Post Comment">
     </form>
     <div class="list-group list-group-flush">
