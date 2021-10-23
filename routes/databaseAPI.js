@@ -4,7 +4,7 @@ const router = express.Router()
 const auth = require('../db/auth')
 const categories = Database.categories;
 
-router.post("/sign_in", async (req, res) => {
+router.post("/sign_in/", async (req, res) => {
     const user = await Database.checkUser(
       req.body["email_id"],
       req.body["password"]
@@ -20,7 +20,7 @@ router.post("/sign_in", async (req, res) => {
     }
 });
 
-router.post("/sign_up", async (req, res) => {
+router.post("/sign_up/", async (req, res) => {
     // dob - javascript Date object
     // interests - array of interests
     // gender - M, F, T

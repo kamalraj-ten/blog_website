@@ -37,7 +37,7 @@ app.get('/', (req,res) =>{
   res.sendFile(path.join(__dirname,'public','login.html'),(err)=>{})
 })
 
-app.get("/blogHome",async (req, res) => {
+app.get("/blogHome/",async (req, res) => {
   const user = auth.verifyToken(req.cookies.token)
   let data = {
     username: "",
@@ -66,7 +66,7 @@ app.get("/blogHome",async (req, res) => {
   }
 })
 
-app.get("/blog/:id", async (req, res) => {
+app.get("/blog/:id/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token)
   if(user === null){
     res.clearCookie('token')
@@ -104,7 +104,7 @@ app.get("/blog/:id", async (req, res) => {
   res.render("viewBlog", render_data);
 });
 
-app.get("/blog_suggestions", async (req, res) => {
+app.get("/blog_suggestions/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token)
   if(user === null){
     res.clearCookie('token')
@@ -132,7 +132,7 @@ app.get("/blog_suggestions", async (req, res) => {
   });
 });
 
-app.get("/user_suggestions", async (req, res) => {
+app.get("/user_suggestions/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token)
   if(cur_user === null){
     res.clearCookie('token')
@@ -160,14 +160,14 @@ app.get("/user_suggestions", async (req, res) => {
 });
 
 // pages
-app.get("/login", (req, res) =>
+app.get("/login/", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "login.html"))
 );
-app.get("/sign_up", (req, res) =>
+app.get("/sign_up/", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
 
-app.get("/user/:id", async (req, res) => {
+app.get("/user/:id/", async (req, res) => {
   // email_id is the current user email_id
   const cur_user = auth.verifyToken(req.cookies.token)
   if(cur_user === null){
@@ -208,16 +208,16 @@ app.get("/user/:id", async (req, res) => {
 });
 
 //Database API routes
-app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")))
+app.use("/database/", require(path.join(__dirname, "routes", "databaseAPI")))
 
 //Tracking API routes
-app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")))
+app.use("/tracking/", require(path.join(__dirname, "routes", "trackingAPI")))
 
 //like and comment API routes
-app.use("/api",require(path.join(__dirname,'routes','likeCommentAPI')))
+app.use("/api/",require(path.join(__dirname,'routes','likeCommentAPI')))
 
 // follow api
-app.post("/follow_user", async (req, res) => {
+app.post("/follow_user/", async (req, res) => {
   const { follower, following } = req.body;
   try {
     await Database.followUser(follower, following);
