@@ -1,16 +1,16 @@
-require("dotenv").config();
-const express = require("express");
-const path = require("path");
-const Database = require("./db/database");
-const Analytics = require("./db/analytics");
-const exphbs = require("express-handlebars");
-const auth = require('./db/auth');
-const cookieParser = require('cookie-parser');
+require("dotenv").config()
+const express = require("express")
+const path = require("path")
+const Database = require("./db/database")
+const Analytics = require("./db/analytics")
+const exphbs = require("express-handlebars")
+const auth = require('./db/auth')
+const cookieParser = require('cookie-parser')
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000
 
-app.listen(PORT);
+app.listen(PORT)
 
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
@@ -66,11 +66,16 @@ app.get("/blogHome",async (req, res) => {
   }
 })
 
-app.get("/blog/:id-:email_id-:username", async (req, res) => {
-  let trg_email = req.params.email_id;
+app.get("/blog/:id", async (req, res) => {
+  const user = auth.verifyToken(req.cookies.token)
+  if(user === null){
+    res.clearCookie('token')
+    return res.redirect('/login')
+  }
+  let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
   let render_data = {
-    username: req.params.username,
+    username: user.username,
     owner: false,
     email: trg_email,
     blog: blogData,
@@ -99,45 +104,57 @@ app.get("/blog/:id-:email_id-:username", async (req, res) => {
   res.render("viewBlog", render_data);
 });
 
-app.get("/blog_suggestions/:email_id", async (req, res) => {
-  const blogSuggestions = await Analytics.blogSuggestion(req.params.email_id);
+app.get("/blog_suggestions", async (req, res) => {
+  const user = auth.verifyToken(req.cookies.token)
+  if(user === null){
+    res.clearCookie('token')
+    return res.redirect('/login')
+  }
+  const blogSuggestions = await Analytics.blogSuggestion(user.email_id);
   var suggestions = [];
   for (var i = 0; i < blogSuggestions.length; ++i) {
     const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
-    const user = await Database.getUserDetail(blog.email_id);
     suggestions.push({
       title: blog.title,
       subject: blog.subject,
       link:
-        "/blog/" +
-        blog.blog_id +
-        "-" +
-        req.params.email_id +
-        "-" +
-        user.username,
+        "/blog/"+blog.blog_id,
       action: "Open",
     });
   }
   res.render("suggestion_page", {
     suggestion_title: "Blog suggestions",
+    username: user.username,
+    blog_suggestion: 'page',
+    user_suggestion: false,
+    email: user.email_id,
     suggestions,
   });
 });
 
-app.get("/user_suggestions/:email_id", async (req, res) => {
-  const userSuggestions = await Analytics.userSuggestion(req.params.email_id);
+app.get("/user_suggestions", async (req, res) => {
+  const cur_user = auth.verifyToken(req.cookies.token)
+  if(cur_user === null){
+    res.clearCookie('token')
+    return res.redirect('/login')
+  }
+  const userSuggestions = await Analytics.userSuggestion(cur_user.email_id);
   var suggestions = [];
   for (var i = 0; i < userSuggestions.length; ++i) {
     const user = await Database.getUserDetail(userSuggestions[i].email_id);
     suggestions.push({
       title: user.username,
       subject: user.email_id,
-      link: "/user/" + user.email_id + "-" + req.params.email_id,
+      link: "/user/" + user.email_id,
       action: "See",
     });
   }
   res.render("suggestion_page", {
-    suggestion_title: "User suggestions",
+    suggestion_title: "Blogger suggestions",
+    username: cur_user.username,
+    email: cur_user.email_id,
+    blog_suggestion: false,
+    user_suggestion: 'page',
     suggestions,
   });
 });
@@ -150,14 +167,19 @@ app.get("/sign_up", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
 );
 
-app.get("/user/:id-:email_id", async (req, res) => {
+app.get("/user/:id", async (req, res) => {
   // email_id is the current user email_id
+  const cur_user = auth.verifyToken(req.cookies.token)
+  if(cur_user === null){
+    res.clearCookie('token')
+    return res.redirect('/login')
+  }
   const user = await Database.getUserDetail(req.params.id);
   const follower = await Database.getFollowerCount(req.params.id);
   const following = await Database.getFollowingCount(req.params.id);
   const blog_count = await Database.getBlogCount(req.params.id);
   const isFollowing =
-    (await Database.isFollowing(req.params.email_id, req.params.id)) == 1;
+    (await Database.isFollowing(cur_user.email_id, req.params.id)) == 1;
   const userBlogs = await Database.getBlogByEmail(req.params.id);
   const chart_load_function = 'loadChart("' + req.params.id + '")';
   const blogs = [];
@@ -170,24 +192,29 @@ app.get("/user/:id-:email_id", async (req, res) => {
     });
   }
   res.render("userpage", {
-    username: user.username,
+    trg_username: user.username,
     name: user.name,
-    email_id: user.email_id,
+    trg_email_id: user.email_id,
+    email: cur_user.email_id,
+    username: cur_user.username,
     following,
     follower,
     isFollowing,
     blog_count,
     blogs,
     chart_load_function,
-    user_email: req.params.email_id,
+    user_email: cur_user.email_id,
   });
 });
 
 //Database API routes
-app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")));
+app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")))
 
 //Tracking API routes
-app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")));
+app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")))
+
+//like and comment API routes
+app.use("/api",require(path.join(__dirname,'routes','likeCommentAPI')))
 
 // follow api
 app.post("/follow_user", async (req, res) => {
@@ -201,46 +228,7 @@ app.post("/follow_user", async (req, res) => {
   }
 });
 
+//route for all invalid url
 app.get("*", function (req, res) {
   res.redirect("/login");
 });
-//Database.getTime();
-// Analytics.userSuggestion("kamal@123").then((suggestedBlogs) =>
-//   console.log(suggestedBlogs)
-// );
-
-// comment api
-app.post("/api/add_comment", async (req, res) => {
-  const { comment, blog_id, email_id, username } = req.body;
-  await Database.putCommentOnBlog(blog_id, email_id, comment);
-  res.redirect("/blog/" + blog_id + "-" + email_id + "-" + username);
-});
-app.post("/api/like", async (req, res) => {
-  const { liked, blog_id, email_id, username } = req.body;
-  if (liked === "true") {
-    await Database.removeBlogLike(email_id, blog_id);
-  } else {
-    await Database.LikeBlog(email_id, blog_id);
-  }
-  res.redirect("/blog/" + blog_id + "-" + email_id + "-" + username);
-});
-
-// testing
-app.post("/testing", (req, res) => {
-  console.log(req.body);
-  //console.log(req);
-  res.json({ response: "hello" });
-});
-//blog related api
-// app.get("/blog/get_blog_by_id", async (req, res) => {
-//   const blog = await Database.getBlogById(req.body["blog_id"]);
-//   res.send(blog);
-// });
-// app.get("/blog/get_blog_by_title", async (req, res) => {
-//   const blogs = await Database.getBlogByTitle(req.body["title"]);
-//   res.send(blogs);
-// });
-// app.get("/blog/get_blog_by_email", async (req, res) => {
-//   const blogs = await Database.getBlogByEmail(req.body["email_id"]);
-//   res.send(blogs);
-// });

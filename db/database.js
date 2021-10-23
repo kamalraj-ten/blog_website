@@ -1,5 +1,6 @@
-var newClient = require("./newClient");
+const connectDB = require("./DBConnect");
 
+let client = connectDB()
 const categories = [
   "Brands",
   "C",
@@ -23,26 +24,8 @@ const categories = [
   "World News",
 ];
 
-const getTime = () => {
-  let client = newClient();
-  client.connect(function (err) {
-    if (err) {
-      return console.error("could not connect to postgres", err);
-    }
-    client.query('SELECT NOW() AS "theTime"', function (err, result) {
-      if (err) {
-        return console.error("error running query", err);
-      }
-      console.log(result.rows[0].theTime);
-      client.end();
-    });
-  });
-};
-
 const getUserDetail = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const result = await client.query(
       "SELECT * FROM users WHERE email_id = $1",
       [email_id]
@@ -56,10 +39,8 @@ const getUserDetail = async (email_id) => {
 };
 
 const getBlogComments = async (blog_id) => {
-  let client = newClient();
   let result;
   try {
-    await client.connect();
     result = await client.query(
       "SELECT email_id, comment, date FROM comments WHERE blog_id = $1",
       [blog_id]
@@ -67,15 +48,12 @@ const getBlogComments = async (blog_id) => {
   } catch (err) {
     console.log(err.stack);
   }
-  client.end();
   return result.rows;
 };
 
 const putCommentOnBlog = async (blog_id, email_id, comment) => {
-  let client = newClient();
   let result;
   try {
-    await client.connect();
     result = await client.query(
       "INSERT INTO comments(email_id, blog_id, comment, date) VALUES($1,$2,$3,$4)",
       [email_id, blog_id, comment, new Date()]
@@ -83,14 +61,11 @@ const putCommentOnBlog = async (blog_id, email_id, comment) => {
   } catch (err) {
     console.log(err.stack);
   }
-  client.end();
 };
 
 const checkUser = async (email_id, password) => {
-  let client = newClient()
   let result
   try {
-    await client.connect();
     let query_res = await client.query(
       "SELECT email_id,username,password,interests FROM users WHERE email_id = $1",
       [email_id]
@@ -106,14 +81,11 @@ const checkUser = async (email_id, password) => {
   } catch (e) {
     console.log(e.stack);
   }
-  client.end();
   return result;
 };
 
 const getBlogById = async (blog_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE blog_id = $1", [
       blog_id,
     ]);
@@ -126,9 +98,7 @@ const getBlogById = async (blog_id) => {
 };
 
 const getBlogByTitle = async (title) => {
-  let client = newClient();
   try {
-    await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE title LIKE $1", [
       "%" + title + "%",
     ]);
@@ -141,9 +111,7 @@ const getBlogByTitle = async (title) => {
 };
 
 const getBlogByEmail = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     var result = await client.query("SELECT * FROM blogs WHERE email_id = $1", [
       email_id,
     ]);
@@ -165,7 +133,6 @@ const signUp = async (
   interests,
   password
 ) => {
-  let client = newClient();
   var resultMsg = { error: "", credentialError: [], success: false };
   try {
     client.connect();
@@ -220,14 +187,12 @@ const createBlog = async (
   email_id,
   subject
 ) => {
-  let client = newClient();
   try {
-    await client.connect();
     await client.query(
       "INSERT INTO blogs(title, date, visibility, context, categories, email_id, subject) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [title, new Date(), visibility, content, categories, email_id, subject]
     );
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -236,14 +201,12 @@ const createBlog = async (
 };
 
 const followUser = async (follower, following) => {
-  let client = newClient();
   try {
-    await client.connect();
     await client.query("INSERT INTO followers VALUES ($1, $2)", [
       follower,
       following,
     ]);
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -252,14 +215,12 @@ const followUser = async (follower, following) => {
 };
 
 const getFollowingCount = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT * FROM followers where follower_email = $1",
       [email_id]
     );
-    client.end();
+
     return res.rows.length;
   } catch (e) {
     console.log(e.stack);
@@ -268,14 +229,12 @@ const getFollowingCount = async (email_id) => {
 };
 
 const getFollowerCount = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT * FROM followers where following_email = $1",
       [email_id]
     );
-    client.end();
+
     return res.rows.length;
   } catch (e) {
     console.log(e.stack);
@@ -284,14 +243,12 @@ const getFollowerCount = async (email_id) => {
 };
 
 const LikeBlog = async (email_id, blog_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     await client.query("INSERT INTO bloglikes VALUES ($1, $2)", [
       email_id,
       blog_id,
     ]);
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -300,14 +257,12 @@ const LikeBlog = async (email_id, blog_id) => {
 };
 
 const isLikedBlog = async (email_id, blog_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT COUNT(*) as count FROM bloglikes WHERE email_id=$1 AND blog_id=$2",
       [email_id, blog_id]
     );
-    client.end();
+
     return res.rows[0]["count"] > 0;
   } catch (e) {
     console.log(e.stack);
@@ -316,14 +271,12 @@ const isLikedBlog = async (email_id, blog_id) => {
 };
 
 const removeBlogLike = async (email_id, blog_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "DELETE FROM bloglikes WHERE email_id=$1 AND blog_id=$2",
       [email_id, blog_id]
     );
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -332,14 +285,12 @@ const removeBlogLike = async (email_id, blog_id) => {
 };
 
 const getBlogLikeCount = async (blog_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT COUNT(*) as count FROM bloglikes WHERE blog_id = $1",
       [blog_id]
     );
-    client.end();
+
     return res.rows[0]["count"];
   } catch (e) {
     console.log(e.stack);
@@ -348,15 +299,13 @@ const getBlogLikeCount = async (blog_id) => {
 };
 
 const addBlogView = async (email_id, blog_id, date = new Date()) => {
-  let client = newClient();
   try {
-    await client.connect();
     await client.query("INSERT INTO blogviews VALUES ($1,$2,$3)", [
       email_id,
       blog_id,
       date,
     ]);
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -365,11 +314,9 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
 };
 
 const getBlogCategories = async () => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query("SELECT blog_id, categories FROM blogs");
-    client.end();
+
     return res.rows;
   } catch (e) {
     console.log(e.stack);
@@ -378,11 +325,9 @@ const getBlogCategories = async () => {
 };
 
 const getUserInterests = async () => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query("SELECT email_id, interests FROM users");
-    client.end();
+
     return res.rows;
   } catch (e) {
     console.log(e.stack);
@@ -391,14 +336,12 @@ const getUserInterests = async () => {
 };
 
 const getBlogCount = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT COUNT(*) as count FROM blogs WHERE email_id = $1",
       [email_id]
     );
-    client.end();
+
     //console.log("count", res.rows);
     return res.rows[0]["count"];
   } catch (e) {
@@ -408,14 +351,12 @@ const getBlogCount = async (email_id) => {
 };
 
 const isFollowing = async (email_id, following_email) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT COUNT(*) AS count FROM followers WHERE follower_email = $1 AND following_email = $2",
       [email_id, following_email]
     );
-    client.end();
+
     return res.rows[0]["count"];
   } catch (e) {
     console.log(e.stack);
@@ -425,9 +366,7 @@ const isFollowing = async (email_id, following_email) => {
 
 // call it during login and logout
 const updateTracking = async (email_id) => {
-  let client = newClient();
   try {
-    await client.connect();
     // check if the log already present for the day
     const now = new Date();
     const dateCheck = await client.query(
@@ -451,7 +390,7 @@ const updateTracking = async (email_id) => {
         now,
       ]);
     }
-    client.end();
+
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -460,14 +399,12 @@ const updateTracking = async (email_id) => {
 };
 
 const getTracking = async (email_id, days) => {
-  let client = newClient();
   try {
-    await client.connect();
     const res = await client.query(
       "SELECT date, hours_used FROM tracking WHERE email_id = $1",
       [email_id]
     );
-    client.end();
+
     var result = res.rows;
     if (res.rows.length > days) {
       result = [];
@@ -481,7 +418,6 @@ const getTracking = async (email_id, days) => {
 };
 
 module.exports = {
-  getTime,
   checkUser,
   getUserDetail,
   getBlogById,
