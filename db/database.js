@@ -90,22 +90,26 @@ const putCommentOnBlog = async (blog_id, email_id, comment) => {
 
 const checkUser = async (email_id, password) => {
   let client = newClient()
-
-  var validity = false;
-
+  let result
   try {
     await client.connect();
-    const result = await client.query(
-      "SELECT email_id, password FROM users WHERE email_id = $1",
+    let query_res = await client.query(
+      "SELECT email_id,username,password,interests FROM users WHERE email_id = $1",
       [email_id]
-    );
-    if (result.rows[0]["password"].toString() === password.toString())
-      validity = true;
+    )
+    if(query_res.rows.length === 0){
+      result = null
+    }else if (query_res.rows[0]["password"].toString() === password.toString()){
+      result = query_res.rows[0]
+      delete result['password']
+    }else{
+      result = null;
+    }
   } catch (e) {
     console.log(e.stack);
   }
   client.end();
-  return validity;
+  return result;
 };
 
 const getBlogById = async (blog_id) => {

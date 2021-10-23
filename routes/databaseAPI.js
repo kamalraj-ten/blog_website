@@ -5,18 +5,18 @@ const auth = require('../db/auth')
 const categories = Database.categories;
 
 router.post("/sign_in", async (req, res) => {
-    const validity = await Database.checkUser(
+    const user = await Database.checkUser(
       req.body["email_id"],
       req.body["password"]
     );
-    if(validity===true){
-      res.json({
-        validity,
-        'token':auth.createNewtoken({email_id:req.body["email_id"],time:new Date()})
+    if(user === null){
+      res.sendStatus(403)
+    }else{
+      let token = auth.createToken(user)
+      res.cookie("token",token,{
+        httpOnly:true,
       })
-    }
-    else{
-      res.json({ validity });
+      res.redirect('/blogHome')
     }
 });
 
@@ -45,7 +45,6 @@ router.post("/sign_up", async (req, res) => {
         ++j;
       } else interestVector += 0;
     }
-    //console.log(interestVector);
     const response = await Database.signUp(
       email_id,
       username,
@@ -56,13 +55,7 @@ router.post("/sign_up", async (req, res) => {
       interestVector,
       password
     );
-    res.send(response);
+    res.send(response)
 });
-
-// app.get("/database/get_user_detail", async (req, res) => {
-//   const user = await Database.getUserDetail(req.body["email_id"]);
-//   //console.log(user);
-//   res.send(user);
-// });
 
 module.exports = router

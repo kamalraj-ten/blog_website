@@ -5,6 +5,7 @@ const Database = require("./db/database");
 const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
 const auth = require('./db/auth');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,7 @@ app.listen(PORT);
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 
 var hbs = exphbs.create({
   helpers: {
@@ -32,37 +34,37 @@ app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
   
 app.get('/', (req,res) =>{
-  res.sendFile(path.join(__dirname,'public','login.html'),err=>{
-    console.log(err)
-  })
+  res.sendFile(path.join(__dirname,'public','login.html'),(err)=>{})
 })
 
-app.get("/blogHome/:email_id-:token", async (req, res) => {
+app.get("/blogHome",async (req, res) => {
+  const user = auth.verifyToken(req.cookies.token)
   let data = {
-    username: " ",
+    username: "",
     blogsList: [],
     emtBlogsList: true,
-    email: req.params.email_id,
-    user_suggestions_link: '"/user_suggestions/' + req.params.email_id + '"',
-    blog_suggestions_link: '"/blog_suggestions/' + req.params.email_id + '"',
+    email: "",
+    user_suggestions_link: '',
+    blog_suggestions_link: '',
   };
-  if(auth.verifyToken(req.params.token,req.params.email_id)){
-    const tempdat = await Database.getUserDetail(req.params.email_id);
-    let blogs = await Database.getBlogByEmail(req.params.email_id);
-    if (tempdat != null) {
-      data.username = tempdat["username"];
+  if(user != null){
+    data.user_suggestions_link = '"/user_suggestions/' + user.email_id + '"'
+    data.blog_suggestions_link = '"/blog_suggestions/' + user.email_id + '"'
+    data.username = user.username
+    data.email = user.email_id
+    let blogs = await Database.getBlogByEmail(user.email_id)
+    if (blogs != null) {
       if (blogs.length != 0) {
         data.emtBlogsList = false;
         data.blogsList = blogs;
       }
-      res.render("mainpage", data);
-    } else {
-      res.end("");
+      res.render("mainpage", data)
     }
   }else{
-    res.redirect('/login');
+    res.clearCookie('token')
+    res.redirect('/login')
   }
-});
+})
 
 app.get("/blog/:id-:email_id-:username", async (req, res) => {
   let trg_email = req.params.email_id;
