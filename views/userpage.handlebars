@@ -3,11 +3,31 @@
     <div class="w-75">
       <div class="row">
         <h1 class="pl-3 display-6 w-50">{{name}}</h1>
-        <span>{{{followButton this}}}</span>
+        <span>
+          {{#if isFollowing}}
+            <form action="/unfollow_user" method="post">
+              <input type="hidden" name="follower" value={{email}} />
+              <input type="hidden" name="following" value={{trg_email_id}} />
+              <input
+                class="btn btn-secondary"
+                type="submit"
+                value="following"
+              />
+            </form>
+          {{else}}
+            <form action="/follow_user" method="post">
+              <input type="hidden" name="follower" value={{email}} />
+              <input type="hidden" name="following" value={{trg_email_id}} />
+              <input class="btn btn-primary" type="submit" value="Follow" />
+            </form>
+          {{/if}}
+        </span>
       </div>
     </div>
   </div>
-  <small class="text-muted mt-2 mb-3">{{trg_email_id}} | {{trg_username}}</small>
+  <small class="text-muted mt-2 mb-3">{{trg_email_id}}
+    |
+    {{trg_username}}</small>
   <div class="row">
     <span class="w-50 border">Followers
       <span class="display-6">{{follower}}</span></span>

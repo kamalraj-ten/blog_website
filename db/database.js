@@ -1,6 +1,6 @@
 const connectDB = require("./DBConnect");
 
-let client = connectDB()
+let client = connectDB();
 const categories = [
   "Brands",
   "C",
@@ -64,18 +64,20 @@ const putCommentOnBlog = async (blog_id, email_id, comment) => {
 };
 
 const checkUser = async (email_id, password) => {
-  let result
+  let result;
   try {
     let query_res = await client.query(
       "SELECT email_id,username,password,interests FROM users WHERE email_id = $1",
       [email_id]
-    )
-    if(query_res.rows.length === 0){
-      result = null
-    }else if (query_res.rows[0]["password"].toString() === password.toString()){
-      result = query_res.rows[0]
-      delete result['password']
-    }else{
+    );
+    if (query_res.rows.length === 0) {
+      result = null;
+    } else if (
+      query_res.rows[0]["password"].toString() === password.toString()
+    ) {
+      result = query_res.rows[0];
+      delete result["password"];
+    } else {
       result = null;
     }
   } catch (e) {
@@ -207,6 +209,19 @@ const followUser = async (follower, following) => {
       following,
     ]);
 
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
+const unfollowUser = async (follower, following) => {
+  try {
+    await client.query(
+      "DELETE FROM followers WHERE follower_email=$1 AND following_email=$2",
+      [follower, following]
+    );
     return true;
   } catch (e) {
     console.log(e.stack);
@@ -427,6 +442,7 @@ module.exports = {
   getFollowerCount,
   getFollowingCount,
   followUser,
+  unfollowUser,
   createBlog,
   LikeBlog,
   isLikedBlog,

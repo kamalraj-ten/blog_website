@@ -1,19 +1,17 @@
-async function follow(email_id) {
-  const callerEmail = localStorage.getItem("email_id");
-  if (!callerEmail) return;
-  console.log(email_id);
-  if (callerEmail === email_id) {
+async function follow(follower_email, following_email) {
+  if (follower_email === following_email) {
     alert("Sorry you cannot follow yourself");
     return;
   }
+  console.log("emails", follower_email, following_email);
   const res = await fetch("/follow_user", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      follower: callerEmail,
-      following: email_id,
+      follower: follower_email,
+      following: following_email,
     }),
   });
   const result = await res.json();
@@ -40,7 +38,7 @@ async function loadChart(email_id) {
     const values = await result.json();
     if (values.length === 0) {
       xValues = [new Date().getDate()];
-      yValues = [1];
+      yValues = [0.1];
     }
     for (var i = 0; i < values.length; ++i) {
       xValues.push(new Date(values[i]["date"]).getDate());

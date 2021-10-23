@@ -1,29 +1,31 @@
-require("dotenv").config()
-const express = require("express")
-const path = require("path")
-const Database = require("./db/database")
-const Analytics = require("./db/analytics")
-const exphbs = require("express-handlebars")
-const auth = require('./db/auth')
-const cookieParser = require('cookie-parser')
+require("dotenv").config();
+const express = require("express");
+const path = require("path");
+const Database = require("./db/database");
+const Analytics = require("./db/analytics");
+const exphbs = require("express-handlebars");
+const auth = require("./db/auth");
+const cookieParser = require("cookie-parser");
 
 const app = express();
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT)
+app.listen(PORT);
 
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-
+//express handlebars - helper functions
 var hbs = exphbs.create({
   helpers: {
     followButton: (ele) => {
       if (!ele.isFollowing)
         return (
           "<button onclick=\"follow('" +
-          ele.email_id +
+          ele.user_email +
+          " ," +
+          ele.trg_email_id +
           '\')" class="btn btn-primary">Follow</button>'
         );
       else return '<span class="badge bg-secondary">following</span>';
@@ -32,45 +34,45 @@ var hbs = exphbs.create({
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-  
-app.get('/', (req,res) =>{
-  res.sendFile(path.join(__dirname,'public','login.html'),(err)=>{})
-})
 
-app.get("/blogHome",async (req, res) => {
-  const user = auth.verifyToken(req.cookies.token)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"), (err) => {});
+});
+
+app.get("/blogHome", async (req, res) => {
+  const user = auth.verifyToken(req.cookies.token);
   let data = {
     username: "",
     blogsList: [],
     emtBlogsList: true,
     email: "",
-    user_suggestions_link: '',
-    blog_suggestions_link: '',
+    user_suggestions_link: "",
+    blog_suggestions_link: "",
   };
-  if(user != null){
-    data.user_suggestions_link = '"/user_suggestions/' + user.email_id + '"'
-    data.blog_suggestions_link = '"/blog_suggestions/' + user.email_id + '"'
-    data.username = user.username
-    data.email = user.email_id
-    let blogs = await Database.getBlogByEmail(user.email_id)
+  if (user != null) {
+    data.user_suggestions_link = '"/user_suggestions/' + user.email_id + '"';
+    data.blog_suggestions_link = '"/blog_suggestions/' + user.email_id + '"';
+    data.username = user.username;
+    data.email = user.email_id;
+    let blogs = await Database.getBlogByEmail(user.email_id);
     if (blogs != null) {
       if (blogs.length != 0) {
         data.emtBlogsList = false;
         data.blogsList = blogs;
       }
-      res.render("mainpage", data)
+      res.render("mainpage", data);
     }
-  }else{
-    res.clearCookie('token')
-    res.redirect('/login')
+  } else {
+    res.clearCookie("token");
+    res.redirect("/login");
   }
-})
+});
 
 app.get("/blog/:id", async (req, res) => {
-  const user = auth.verifyToken(req.cookies.token)
-  if(user === null){
-    res.clearCookie('token')
-    return res.redirect('/login')
+  const user = auth.verifyToken(req.cookies.token);
+  if (user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
   }
   let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
@@ -105,10 +107,10 @@ app.get("/blog/:id", async (req, res) => {
 });
 
 app.get("/blog_suggestions", async (req, res) => {
-  const user = auth.verifyToken(req.cookies.token)
-  if(user === null){
-    res.clearCookie('token')
-    return res.redirect('/login')
+  const user = auth.verifyToken(req.cookies.token);
+  if (user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
   }
   const blogSuggestions = await Analytics.blogSuggestion(user.email_id);
   var suggestions = [];
@@ -117,15 +119,14 @@ app.get("/blog_suggestions", async (req, res) => {
     suggestions.push({
       title: blog.title,
       subject: blog.subject,
-      link:
-        "/blog/"+blog.blog_id,
+      link: "/blog/" + blog.blog_id,
       action: "Open",
     });
   }
   res.render("suggestion_page", {
     suggestion_title: "Blog suggestions",
     username: user.username,
-    blog_suggestion: 'page',
+    blog_suggestion: "page",
     user_suggestion: false,
     email: user.email_id,
     suggestions,
@@ -133,10 +134,10 @@ app.get("/blog_suggestions", async (req, res) => {
 });
 
 app.get("/user_suggestions", async (req, res) => {
-  const cur_user = auth.verifyToken(req.cookies.token)
-  if(cur_user === null){
-    res.clearCookie('token')
-    return res.redirect('/login')
+  const cur_user = auth.verifyToken(req.cookies.token);
+  if (cur_user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
   }
   const userSuggestions = await Analytics.userSuggestion(cur_user.email_id);
   var suggestions = [];
@@ -154,7 +155,7 @@ app.get("/user_suggestions", async (req, res) => {
     username: cur_user.username,
     email: cur_user.email_id,
     blog_suggestion: false,
-    user_suggestion: 'page',
+    user_suggestion: "page",
     suggestions,
   });
 });
@@ -169,10 +170,10 @@ app.get("/sign_up", (req, res) =>
 
 app.get("/user/:id", async (req, res) => {
   // email_id is the current user email_id
-  const cur_user = auth.verifyToken(req.cookies.token)
-  if(cur_user === null){
-    res.clearCookie('token')
-    return res.redirect('/login')
+  const cur_user = auth.verifyToken(req.cookies.token);
+  if (cur_user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
   }
   const user = await Database.getUserDetail(req.params.id);
   const follower = await Database.getFollowerCount(req.params.id);
@@ -208,24 +209,37 @@ app.get("/user/:id", async (req, res) => {
 });
 
 //Database API routes
-app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")))
+app.use("/database", require(path.join(__dirname, "routes", "databaseAPI")));
 
 //Tracking API routes
-app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")))
+app.use("/tracking", require(path.join(__dirname, "routes", "trackingAPI")));
 
 //like and comment API routes
-app.use("/api",require(path.join(__dirname,'routes','likeCommentAPI')))
+app.use("/api", require(path.join(__dirname, "routes", "likeCommentAPI")));
 
 // follow api
 app.post("/follow_user", async (req, res) => {
   const { follower, following } = req.body;
+  //console.log(follower, following);
   try {
     await Database.followUser(follower, following);
-    res.json({ validity: true });
   } catch (e) {
     console.log(e.stack);
-    res.json({ validity: false });
   }
+
+  res.redirect("/user/" + following);
+});
+
+app.post("/unfollow_user", async (req, res) => {
+  const { follower, following } = req.body;
+  //console.log(follower, following);
+  try {
+    await Database.unfollowUser(follower, following);
+  } catch (e) {
+    console.log(e.stack);
+  }
+
+  res.redirect("/user/" + following);
 });
 
 //route for all invalid url
