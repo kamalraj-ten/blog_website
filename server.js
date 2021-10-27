@@ -59,8 +59,8 @@ app.get("/blogHome/", async (req, res) => {
       res.render("mainpage", data);
     }
   } else {
-    res.clearCookie("token");
-    res
+    res.clearCookie("token")
+    res.redirect('/login')
   }
 });
 
@@ -68,7 +68,7 @@ app.get("/blog/:id/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
   if (user === null) {
     res.clearCookie("token");
-    return res
+    return res.redirect('/login')
   }
   let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
@@ -106,7 +106,7 @@ app.get("/blog_suggestions/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
   if (user === null) {
     res.clearCookie("token");
-    return res
+    return res.redirect('/login')
   }
   const blogSuggestions = await Analytics.blogSuggestion(user.email_id);
   var suggestions = [];
@@ -133,7 +133,7 @@ app.get("/user_suggestions/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
     res.clearCookie("token");
-    return res
+    return res.redirect('/login')
   }
   const userSuggestions = await Analytics.userSuggestion(cur_user.email_id);
   var suggestions = [];
@@ -169,7 +169,7 @@ app.get("/user/:id/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
     res.clearCookie("token");
-    return res
+    return res.redirect('/login')
   }
   const user = await Database.getUserDetail(req.params.id);
   const follower = await Database.getFollowerCount(req.params.id);
