@@ -67,7 +67,7 @@ const checkUser = async (email_id, password) => {
   let result;
   try {
     let query_res = await client.query(
-      "SELECT email_id,username,password,interests FROM users WHERE email_id = $1",
+      "SELECT email_id,username,password FROM users WHERE email_id = $1",
       [email_id]
     );
     if (query_res.rows.length === 0) {

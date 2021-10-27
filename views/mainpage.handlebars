@@ -1,5 +1,4 @@
 <title>Blog main page</title>
-<script src="../scripts/mainpageScript.js"></script>
 <section class="container">
     <div class="display-2 mt-4"><h2>Blogs I Wrote</h2></div>
     <div class="row row-cols-3 ml-1">
@@ -14,8 +13,7 @@
                 <div class="card-body">
                     <h5 class="card-title" id="blogTitle">{{this.title}}</h5>
                     <p class="card-text">{{this.subject}}</p>
-                    <p class="d-none" id="blogID">{{this.blog_id}}</p>
-                    <a onclick="dispBlog()" class="btn btn-primary">Read Blog</a>
+                    <a onclick="window.location.href='/blog/{{this.blog_id}}'" class="btn btn-primary">Read Blog</a>
                 </div>
             </div>
             {{/each}}

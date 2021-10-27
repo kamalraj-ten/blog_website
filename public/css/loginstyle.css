@@ -80,6 +80,30 @@ button {
   font-weight: 500;
 }
 
+.message{
+  width: 100%;
+  border: 1px solid;
+  text-align: center;
+}
+
+.message:hover{
+  cursor: auto;
+  background-color: #f2f2f2;
+  color: green;
+}
+
+.err-message{
+  width: 100%;
+  border: 1px solid;
+  text-align: center;
+}
+
+.err-message:hover{
+  cursor: auto;
+  background-color: #f2f2f2;
+  color: red;
+}
+
 button:hover {
   border-color: slategray;
   transition: 0.5s;

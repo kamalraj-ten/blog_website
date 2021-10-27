@@ -46,8 +46,6 @@ app.get("/blogHome/", async (req, res) => {
     blog_suggestions_link: "",
   };
   if (user != null) {
-    data.user_suggestions_link = '"/user_suggestions/' + user.email_id + '"';
-    data.blog_suggestions_link = '"/blog_suggestions/' + user.email_id + '"';
     data.username = user.username;
     data.email = user.email_id;
     let blogs = await Database.getBlogByEmail(user.email_id);
@@ -60,7 +58,7 @@ app.get("/blogHome/", async (req, res) => {
     }
   } else {
     res.clearCookie("token");
-    res.redirect("/login");
+    res
   }
 });
 
@@ -68,7 +66,7 @@ app.get("/blog/:id/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
   if (user === null) {
     res.clearCookie("token");
-    return res.redirect("/login");
+    return res
   }
   let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
@@ -106,7 +104,7 @@ app.get("/blog_suggestions/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
   if (user === null) {
     res.clearCookie("token");
-    return res.redirect("/login");
+    return res
   }
   const blogSuggestions = await Analytics.blogSuggestion(user.email_id);
   var suggestions = [];
@@ -133,7 +131,7 @@ app.get("/user_suggestions/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
     res.clearCookie("token");
-    return res.redirect("/login");
+    return res
   }
   const userSuggestions = await Analytics.userSuggestion(cur_user.email_id);
   var suggestions = [];
@@ -157,19 +155,19 @@ app.get("/user_suggestions/", async (req, res) => {
 });
 
 // pages
-app.get("/login/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "login.html"))
-);
+app.get("/login", (req, res) =>
+  res.render('login',{ layout:'no_nav_main'})
+)
 app.get("/sign_up/", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "signup2.html"))
-);
+)
 
 app.get("/user/:id/", async (req, res) => {
   // email_id is the current user email_id
   const cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
     res.clearCookie("token");
-    return res.redirect("/login");
+    return res
   }
   const user = await Database.getUserDetail(req.params.id);
   const follower = await Database.getFollowerCount(req.params.id);
@@ -202,7 +200,7 @@ app.get("/user/:id/", async (req, res) => {
     chart_load_function,
     user_email: cur_user.email_id,
   });
-});
+})
 
 //Database API routes
 app.use("/database/", require(path.join(__dirname, "routes", "databaseAPI")));
@@ -237,6 +235,15 @@ app.post("/unfollow_user", async (req, res) => {
 
   res.redirect("/user/" + following);
 });
+
+app.get('/logout',(req,res)=>{
+  let user = auth.verifyToken(req.cookie.token)
+  if(user!=null){
+    console.log(user)
+  }
+  res.clearCookie('token')
+  res.redirect('/login')
+})
 
 //route for all invalid url
 app.get("*", function (req, res) {

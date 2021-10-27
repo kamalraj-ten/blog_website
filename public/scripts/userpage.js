@@ -71,8 +71,7 @@ async function loadChart(email_id) {
 }
 
 function logout() {
-  localStorage.setItem("email_id", null);
-  window.location.href = "/login";
+  window.location.href = "/logout";
 }
 
 // calling addtracking
