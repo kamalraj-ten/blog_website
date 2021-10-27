@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT);
 
+
+
 app.use(express.static(path.join(__dirname, "public"))); // servers the index.html
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -210,10 +212,10 @@ app.use("/database/", require(path.join(__dirname, "routes", "databaseAPI")));
 //Tracking API routes
 app.use("/tracking/", require(path.join(__dirname, "routes", "trackingAPI")));
 
-//like and comment API routes
+//Like and comment API routes
 app.use("/api/", require(path.join(__dirname, "routes", "likeCommentAPI")));
 
-// follow api
+// Follow API
 app.post("/follow_user/", async (req, res) => {
   const { follower, following } = req.body;
   //console.log(follower, following);
