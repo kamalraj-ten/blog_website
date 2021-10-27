@@ -8,6 +8,8 @@ router.post("/add_comment/", async (req, res) => {
     await Database.putCommentOnBlog(blog_id, email_id, comment)
     res.redirect("/blog/" + blog_id)
 });
+
+
   
 router.post("/like/", async (req, res) => {
     const { liked, blog_id, email_id, username } = req.body
@@ -18,5 +20,6 @@ router.post("/like/", async (req, res) => {
     }
     res.redirect("/blog/" + blog_id)
 });
+
 
 module.exports = router
