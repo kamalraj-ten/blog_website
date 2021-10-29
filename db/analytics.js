@@ -5,7 +5,7 @@ const Database = require("./database");
 function toVector(s) {
   var vector = [];
   for (var i = 0; i < s.length; ++i) {
-    vector.push(s[i]);
+    vector.push(Number(s[i]));
   }
   return vector;
 }

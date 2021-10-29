@@ -24,6 +24,14 @@ const categories = [
   "World News",
 ];
 
+function toVector(s) {
+  var vector = [];
+  for (var i = 0; i < s.length; ++i) {
+    vector.push(Number(s[i]));
+  }
+  return vector;
+}
+
 const getUserDetail = async (email_id) => {
   try {
     const result = await client.query(
@@ -463,6 +471,49 @@ const getTracking = async (email_id, days) => {
   }
 };
 
+const updateInterestsIncrease = async (email_id, blog_id) => {
+  try {
+    const { interests } = await getUserDetail(email_id);
+    const interestVector = toVector(interests);
+    const { categories } = await getBlogById(blog_id);
+    const categoriesVector = toVector(categories);
+    var finalvector = "";
+    for (var i = 0; i < categoriesVector.length; ++i) {
+      if (categoriesVector[i] === 1) interestVector[i]++;
+      finalvector += interestVector[i];
+    }
+
+    await client.query("UPDATE users SET interests=$1 WHERE email_id = $2", [
+      finalvector,
+      email_id,
+    ]);
+  } catch (e) {
+    console.log(e.stack);
+  }
+};
+
+const updateInterestsDecrease = async (email_id, blog_id) => {
+  try {
+    const { interests } = await getUserDetail(email_id);
+    const interestVector = toVector(interests);
+    const { categories } = await getBlogById(blog_id);
+    const categoriesVector = toVector(categories);
+    var finalvector = "";
+    console.log(interests);
+    for (var i = 0; i < categoriesVector.length; ++i) {
+      if (categoriesVector[i] === 1) interestVector[i]--;
+      finalvector += interestVector[i];
+    }
+    console.log(finalvector);
+    await client.query("UPDATE users SET interests=$1 WHERE email_id = $2", [
+      finalvector,
+      email_id,
+    ]);
+  } catch (e) {
+    console.log(e.stack);
+  }
+};
+
 module.exports = {
   checkUser,
   getUserDetail,
@@ -489,5 +540,7 @@ module.exports = {
   getBlogComments,
   putCommentOnBlog,
   addTrackingHour,
+  updateInterestsIncrease,
+  updateInterestsDecrease,
   categories,
 };
