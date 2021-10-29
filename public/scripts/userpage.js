@@ -41,7 +41,10 @@ async function loadChart(email_id) {
       yValues = [0.1];
     }
     for (var i = 0; i < values.length; ++i) {
-      xValues.push(new Date(values[i]["date"]).getDate());
+      let curr_date = new Date(values[i]["date"]);
+      xValues.push(
+        curr_date.getDate().toString() + "/" + curr_date.getMonth().toString()
+      );
       yValues.push(values[i]["hours_used"]);
     }
   } catch (e) {
@@ -66,6 +69,26 @@ async function loadChart(email_id) {
     },
     options: {
       legend: { display: false },
+      scales: {
+        yAxes: [
+          {
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "hours used",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "dd/mm",
+            },
+          },
+        ],
+      },
     },
   });
 }
@@ -80,4 +103,37 @@ function logout() {
 //   await fetch("/tracking/" + email_id);
 // }
 
-// increases even if others see
+let startDate = new Date();
+let elapsedTime = 0;
+
+const focus = function () {
+  startDate = new Date();
+};
+
+const blur = function () {
+  const endDate = new Date();
+  const spentTime = endDate.getTime() - startDate.getTime();
+  elapsedTime += spentTime;
+};
+
+const beforeunload = function () {
+  const endDate = new Date();
+  const spentTime = endDate.getTime() - startDate.getTime();
+  elapsedTime += spentTime;
+  console.log("time spend", elapsedTime);
+
+  // elapsedTime contains the time spent on page in milliseconds
+  fetch("/tracking/", {
+    method: "post",
+    body: JSON.stringify({
+      elapsedTime,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+window.addEventListener("focus", focus);
+window.addEventListener("blur", blur);
+window.addEventListener("beforeunload", beforeunload);

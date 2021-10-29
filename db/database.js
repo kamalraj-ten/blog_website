@@ -413,6 +413,37 @@ const updateTracking = async (email_id) => {
   }
 };
 
+const addTrackingHour = async (email_id, hours) => {
+  try {
+    // check if the log already present for the day
+    const now = new Date();
+    const dateCheck = await client.query(
+      "SELECT * FROM tracking WHERE email_id = $1 AND date = $2",
+      [email_id, now]
+    );
+    if (dateCheck.rows.length == 1) {
+      // log already present
+      await client.query(
+        "UPDATE tracking SET last_time = $1, hours_used = $2 WHERE email_id = $3 AND date = $4",
+        [now, dateCheck.rows[0].hours_used + hours, email_id, now]
+      );
+    } else {
+      // create new log
+      await client.query("INSERT INTO tracking VALUES ($1,$2,$3,$4)", [
+        email_id,
+        now,
+        hours,
+        now,
+      ]);
+    }
+
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
 const getTracking = async (email_id, days) => {
   try {
     const res = await client.query(
@@ -457,5 +488,6 @@ module.exports = {
   getTracking,
   getBlogComments,
   putCommentOnBlog,
+  addTrackingHour,
   categories,
 };
