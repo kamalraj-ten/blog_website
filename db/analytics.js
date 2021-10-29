@@ -37,8 +37,7 @@ const blogSuggestion = async (email_id) => {
 
 const userSuggestion = async (email) => {
   const { interests } = await Database.getUserDetail(email);
-  const arr = await Database.getUserInterests();
-  const userInterests = arr.filter((u) => u.email_id != email);
+  const userInterests = await Database.getUserInterests(email);
   var similarityArr = [];
   const interestVector = toVector(interests);
 
@@ -48,6 +47,16 @@ const userSuggestion = async (email) => {
       email_id: user.email_id,
     });
   });
+
+  const likedBlogUsers = await Database.getLikedUsers(email);
+
+  for (var i = 0; i < likedBlogUsers.length; ++i) {
+    for (var j = 0; j < similarityArr.length; ++j) {
+      if (likedBlogUsers[i]["email_id"] == similarityArr[j].email_id) {
+        similarityArr[j].similarity += 0.5;
+      }
+    }
+  }
 
   similarityArr.sort((a, b) => {
     if (a.similarity < b.similarity) return 1;

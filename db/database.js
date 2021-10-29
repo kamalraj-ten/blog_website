@@ -331,7 +331,8 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
 
     return true;
   } catch (e) {
-    console.log(e.stack);
+    //console.log(e.stack);
+    console.log("repeating value");
     return false;
   }
 };
@@ -347,9 +348,12 @@ const getBlogCategories = async () => {
   }
 };
 
-const getUserInterests = async () => {
+const getUserInterests = async (email_id) => {
   try {
-    const res = await client.query("SELECT email_id, interests FROM users");
+    const res = await client.query(
+      "SELECT email_id, interests FROM users WHERE email_id != $1 AND email_id NOT IN (SELECT following_email FROM followers WHERE follower_email = $2)",
+      [email_id, email_id]
+    );
 
     return res.rows;
   } catch (e) {
@@ -514,6 +518,19 @@ const updateInterestsDecrease = async (email_id, blog_id) => {
   }
 };
 
+const getLikedUsers = async (email) => {
+  try {
+    const res = await client.query(
+      "(select distinct email_id from blogs where blog_id IN ( select blog_id from bloglikes where email_id = $1) ) except (select distinct following_email from followers where follower_email = $2)",
+      [email, email]
+    );
+    return res.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return [];
+  }
+};
+
 module.exports = {
   checkUser,
   getUserDetail,
@@ -542,5 +559,6 @@ module.exports = {
   addTrackingHour,
   updateInterestsIncrease,
   updateInterestsDecrease,
+  getLikedUsers,
   categories,
 };
