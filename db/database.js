@@ -337,6 +337,18 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
   }
 };
 
+const getBlogSortedByViews = async () => {
+  try {
+    const res = await client.query(
+      "select blogs.blog_id, title, subject , count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id group by blogs.blog_id order by count desc"
+    );
+    return res.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return [];
+  }
+};
+
 const getBlogCategories = async () => {
   try {
     const res = await client.query("SELECT blog_id, categories FROM blogs");
@@ -548,6 +560,7 @@ module.exports = {
   removeBlogLike,
   getBlogLikeCount,
   addBlogView,
+  getBlogSortedByViews,
   getBlogCategories,
   getUserInterests,
   getBlogCount,

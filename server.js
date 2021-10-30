@@ -6,6 +6,7 @@ const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
 const auth = require("./db/auth");
 const cookieParser = require("cookie-parser");
+const { title } = require("process");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -201,6 +202,22 @@ app.get("/user/:id/", async (req, res) => {
     blogs,
     chart_load_function,
     user_email: cur_user.email_id,
+  });
+});
+
+app.get("/trending/", async (req, res) => {
+  const blogs = await Database.getBlogSortedByViews();
+  const suggestions = blogs.map((b) => {
+    return {
+      title: b.title,
+      subject: b.subject,
+      action: "Open",
+      link: "/blog/" + b.blog_id,
+    };
+  });
+  res.render("suggestion_page", {
+    suggestion_title: "Trending blogs",
+    suggestions,
   });
 });
 
