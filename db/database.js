@@ -340,7 +340,7 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
 const getBlogSortedByViews = async () => {
   try {
     const res = await client.query(
-      "select blogs.blog_id, title, subject , count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id group by blogs.blog_id order by count desc"
+      "select blogs.blog_id, title, subject, count(bloglikes.blog_id) as like_count, count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id left outer join bloglikes on blogs.blog_id = bloglikes.blog_id group by blogs.blog_id order by count desc, like_count desc"
     );
     return res.rows;
   } catch (e) {
