@@ -6,7 +6,7 @@ const Analytics = require("./db/analytics");
 const exphbs = require("express-handlebars");
 const auth = require("./db/auth");
 const cookieParser = require("cookie-parser");
-const { title } = require("process");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,33 +35,6 @@ var hbs = exphbs.create({
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-
-app.get("/blogHome/", async (req, res) => {
-  const user = auth.verifyToken(req.cookies.token);
-  let data = {
-    username: "",
-    blogsList: [],
-    emtBlogsList: true,
-    email: "",
-    user_suggestions_link: "",
-    blog_suggestions_link: "",
-  };
-  if (user != null) {
-    data.username = user.username;
-    data.email = user.email_id;
-    let blogs = await Database.getBlogByEmail(user.email_id);
-    if (blogs != null) {
-      if (blogs.length != 0) {
-        data.emtBlogsList = false;
-        data.blogsList = blogs;
-      }
-      res.render("mainpage", data);
-    }
-  } else {
-    res.clearCookie("token");
-    res.redirect("/login");
-  }
-});
 
 app.get("/blog/:id/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
@@ -105,7 +78,7 @@ app.get("/blog/:id/", async (req, res) => {
   res.render("viewBlog", render_data);
 });
 
-app.get("/blog_suggestions/", async (req, res) => {
+app.get("/blogHome/", async (req, res) => {
   const user = auth.verifyToken(req.cookies.token);
   if (user === null) {
     res.clearCookie("token");
@@ -123,17 +96,19 @@ app.get("/blog_suggestions/", async (req, res) => {
     });
   }
   res.render("suggestion_page", {
-    suggestion_title: "Blog suggestions",
+    suggestion_title: "Blog Home",
     username: user.username,
-    blog_suggestion: "page",
-    user_suggestion: false,
+    home:'active',
+    hint: 'Blogs you might like, based on your activity',
     email: user.email_id,
     suggestions,
   });
 });
 
 app.get("/create_blog",async (req,res)=>{
-  res.render('create_blog')
+  res.render('create_blog',{
+    create:'active'
+  })
 })
 
 app.get("/user_suggestions/", async (req, res) => {
@@ -155,6 +130,8 @@ app.get("/user_suggestions/", async (req, res) => {
   }
   res.render("suggestion_page", {
     suggestion_title: "Blogger suggestions",
+    user_sug:'active',
+    hint: 'People you might like, based on your activity',
     username: cur_user.username,
     email: cur_user.email_id,
     blog_suggestion: false,
@@ -213,6 +190,11 @@ app.get("/user/:id/", async (req, res) => {
 });
 
 app.get("/trending/", async (req, res) => {
+  const cur_user = auth.verifyToken(req.cookies.token);
+  if (cur_user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
+  }
   const blogs = await Database.getBlogSortedByViews();
   const suggestions = blogs.map((b) => {
     return {
@@ -223,6 +205,7 @@ app.get("/trending/", async (req, res) => {
     };
   });
   res.render("suggestion_page", {
+    trending: 'active',
     suggestion_title: "Trending blogs",
     suggestions,
   });
@@ -263,12 +246,12 @@ app.post("/unfollow_user", async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  let user = auth.verifyToken(req.cookie.token);
+  let user = auth.verifyToken(req.cookies.token)
   if (user != null) {
-    console.log(user);
+    auth.deleteToken(req.cookies.token)
   }
-  res.clearCookie("token");
-  res.redirect("/login");
+  res.clearCookie("token")
+  res.redirect("/login")
 });
 
 //route for all invalid url
