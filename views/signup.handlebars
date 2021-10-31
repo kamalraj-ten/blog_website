@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="../css/signup.css">
+<script src="../scripts/signup.js"></script>
+<h1> SIGN UP </h1>
+<div class="userdetl container">
+  <form action="/database/sign_up" method="post">
+    <div class="form-group">
+      <input class="form-control" type="text" placeholder="Full name" name="name" id="signupname"  required>
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="text" placeholder="Username" name="username" id="signupusername" required>
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="text" placeholder="Email id" name="email_id" id="signupmail" required>
+    </div>
+    <div class="form-group">
+      <select id="signupgender" name="gender" placeholder="Gender" class ="form-control" required>
+      <option value="">select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="text" placeholder="Country" name="country" class="form-control" id="signupcntry" required>
+    </div>
+    <div class="form-group">
+      <input type="date" placeholder="DOB" name="dob" id="signupdob" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <input type="password" placeholder="Password" name="pwd" id="signuppswd" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <input type="password" placeholder="Confirm password" name="confirm_pwd" id="signupcpswd" class="form-control" required>
+    </div>
+    <h2>Field of Interest </h2>
+    <div id="interests" class="flexb" onclick="selectInterest(event)">
+      <div>Brands</div>
+      <div>C</div>
+      <div>C++</div>
+      <div>Countries</div>
+      <div>Entertainment</div>
+      <div>Flutter</div>
+      <div>Government</div>
+      <div>Movies</div>
+      <div>Law</div>
+      <div>Locations</div>
+      <div>Lifestyle</div>
+      <div>Medicine</div>
+      <div>Memes</div>
+      <div>Music</div>
+      <div>Politics</div>
+      <div>Social services</div>
+      <div>Sports</div>
+      <div>Technology</div>
+      <div>Travel</div>
+      <div>World News</div>
+    </div>
+    <div class="clibut form-group">
+      <input type="button" value="Sign up" class="signupbutton button form-control" id="signupbtn" name="signing_up" onClick="rdsignup()">
+    </div>
+  </form>
+  <input type="button" class="cancelbutton button" onClick="window.location.href = '/login'" value="Cancel">
+</div>

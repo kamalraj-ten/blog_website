@@ -6,10 +6,7 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
     <script src="../scripts/bootstrap.min.js"></script>
     <script src="../scripts/userpage.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"
-    >
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -23,6 +20,7 @@
                 <li class="nav-item"><a class="nav-link" href="/blogHome">Blog Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/user_suggestions">Bloger Suggestion</a></li>
                 <li class="nav-item"><a class="nav-link" href="/blog_suggestions">Blog Recommendation</a></li>
+                <li class="nav-item"><a class="nav-link" href="/create_blog">Create blog</a></li>
             </ul>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -36,7 +34,6 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="/user/{{email}}">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Create Blog</a></li>
                     <li><a onclick="logout()" class="dropdown-item" href="#">Logout</a></li>
                 </ul>
             </div>

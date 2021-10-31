@@ -132,6 +132,10 @@ app.get("/blog_suggestions/", async (req, res) => {
   });
 });
 
+app.get("/create_blog",async (req,res)=>{
+  res.render('create_blog')
+})
+
 app.get("/user_suggestions/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
@@ -159,11 +163,14 @@ app.get("/user_suggestions/", async (req, res) => {
   });
 });
 
-// pages
-app.get("/login", (req, res) => res.render("login", { layout: "no_nav_main" }));
+
+app.get("/login", (req, res) => 
+  res.render("login", { layout: "no_nav_main" })
+)
+
 app.get("/sign_up/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "signup2.html"))
-);
+  res.render("signup", { layout: "no_nav_main" })
+)
 
 app.get("/user/:id/", async (req, res) => {
   // email_id is the current user email_id

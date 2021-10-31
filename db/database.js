@@ -145,7 +145,6 @@ const signUp = async (
 ) => {
   var resultMsg = { error: "", credentialError: [], success: false };
   try {
-    client.connect();
     var errorHappened = false;
     // check email
     const emailCheck = await client.query(

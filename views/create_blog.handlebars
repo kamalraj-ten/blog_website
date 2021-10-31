@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="css/create_new.css">
+<div class="container mt-5">
+    <form>
+        <div class="form-group row">
+            <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+            <input type="Title" class="form-control" id="inputTitle" placeholder="Title">
+            </div>
+        </div><br>
+        <div class="form-group row">
+            <label for="inputsubject" class="col-sm-2 col-form-label">Subject</label>
+            <div class="col-sm-10">
+                <input type="subject" class="form-control" id="inputsubject" placeholder="subject">
+            </div>
+        </div><br>
+    </form>
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">View as</label>
+    <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+        <option selected>Choose...</option>
+        <option value="1">Public</option>
+        <option value="2">Private</option>
+    </select><br><br>
+    <hr>
+    <center> 
+    <div id="interests" class="flexb" onclick="selectInterest(event)">
+     <div>Brands</div>
+     <div>C</div>
+     <div>C++</div>
+     <div>Countries</div>
+     <div>Entertainment</div>
+     <div>Flutter</div>
+     <div>Government</div>
+     <div>Movies</div>
+     <div>Law</div>
+     <div>Locations</div>
+     <div>Lifestyle</div>
+     <div>Medicine</div>
+     <div>Memes</div>
+     <div>Music</div>
+     <div>Politics</div>
+     <div>Social services</div>
+     <div>Sports</div>
+     <div>Technology</div>
+     <div>Travel</div>
+     <div>World News</div>
+    </div> 
+    </center>
+    <hr>
+    <span><a href="#" class="btn btn-outline-primary" role="button" aria-disabled="true">Publish</a></span>
+</div>

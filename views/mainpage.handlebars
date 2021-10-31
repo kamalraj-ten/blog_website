@@ -9,8 +9,8 @@
             </div>
         {{else}}
             {{#each blogsList}}
-            <div class="col-lg-4 card m-1 border border-info" style="width: 32%;">
-                <div class="card-body">
+            <div class="col-lg-4 card m-1" style="width: 32%;">
+                <div class="card-body min-vw-50">
                     <h5 class="card-title" id="blogTitle">{{this.title}}</h5>
                     <p class="card-text">{{this.subject}}</p>
                     <a onclick="window.location.href='/blog/{{this.blog_id}}'" class="btn btn-primary">Read Blog</a>
