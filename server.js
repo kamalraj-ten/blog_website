@@ -107,6 +107,10 @@ app.get("/blogHome/", async (req, res) => {
 
 app.get("/create_blog",async (req,res)=>{
   let cur_user = auth.verifyToken(req.cookies.token)
+  if (cur_user === null) {
+    res.clearCookie("token");
+    return res.redirect("/login");
+  }
   res.render('create_blog',{
     create:'active',
     username: cur_user.username,
