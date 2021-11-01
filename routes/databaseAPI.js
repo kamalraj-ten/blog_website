@@ -16,6 +16,9 @@ router.post("/sign_in/", async (req, res) => {
       let token = auth.createToken(user)
       res.cookie("token",token,{
         httpOnly:true,
+        secure:true,
+        sameSite: true,
+        maxAge: 36*Math.pow(10,5)
       })
       res.redirect('/blogHome')
     }

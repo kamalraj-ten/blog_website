@@ -106,8 +106,11 @@ app.get("/blogHome/", async (req, res) => {
 });
 
 app.get("/create_blog",async (req,res)=>{
+  let cur_user = auth.verifyToken(req.cookies.token)
   res.render('create_blog',{
-    create:'active'
+    create:'active',
+    username: cur_user.username,
+    email: cur_user.email_id
   })
 })
 
@@ -208,6 +211,8 @@ app.get("/trending/", async (req, res) => {
     trending: 'active',
     suggestion_title: "Trending blogs",
     suggestions,
+    username: cur_user.username,
+    email: cur_user.email_id
   });
 });
 
