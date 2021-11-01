@@ -97,6 +97,69 @@ function logout() {
   window.location.href = "/logout";
 }
 
+function toCardBlogHtml(list) {
+  let string = "";
+  for (var i = 0; i < list.length; ++i) {
+    string =
+      string +
+      '<div class="card w-100 bg-dark text-light mb-3"><div class="card-body"><h5 class="card-title">' +
+      list[i].title +
+      '</h5><p class="card-text">' +
+      list[i].subject +
+      '</p><a href="blog/' +
+      list[i].blog_id +
+      '" class="btn btn-light">Open Blog</a></div></div>';
+  }
+  return string;
+}
+function toCardUserHtml(list) {
+  let string = "";
+  for (var i = 0; i < list.length; ++i) {
+    string =
+      string +
+      '<div class="card w-100 bg-secondary text-light mb-3"><div class="card-body"><h5 class="card-title">' +
+      list[i].username +
+      '</h5><p class="card-text">' +
+      list[i].email_id +
+      '</p><a href="/user/' +
+      list[i].email_id +
+      '" class="btn btn-light">See User</a></div></div>';
+  }
+  return string;
+}
+
+// function to activate the search modal
+async function loadSearch() {
+  const modalBlog = document.getElementById("search-result-blog");
+  const modalUser = document.getElementById("search-result-user");
+  modalBlog.innerHTML =
+    '<div class="m-5 spinner-grow text-primary" role="status"><span class="visually-hidden">Loading...</span></div>' +
+    '<div class="m-5 spinner-grow text-danger" role="status"><span class="visually-hidden">Loading...</span></div>' +
+    '<div class="m-5 spinner-grow text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+  modalUser.innerHTML =
+    '<div class="m-5 spinner-grow text-primary" role="status"><span class="visually-hidden">Loading...</span></div>' +
+    '<div class="m-5 spinner-grow text-danger" role="status"><span class="visually-hidden">Loading...</span></div>' +
+    '<div class="m-5 spinner-grow text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+  // server call
+  const search_input = document.getElementById("search-text");
+  const searchText = search_input.value;
+  if (!searchText.trim()) {
+    // empty string
+    modalBlog.innerHTML = "<h2>Please enter some text to search</h2>";
+    return;
+  }
+
+  let blogResult = await fetch("/database/blog_search/" + searchText);
+  let blogs = await blogResult.json();
+  const blogHtml = toCardBlogHtml(blogs.data);
+  modalBlog.innerHTML = blogHtml;
+
+  const userResult = await fetch("/database/user_search/" + searchText);
+  let users = await userResult.json();
+  const userHtml = toCardUserHtml(users.data);
+  modalUser.innerHTML = userHtml;
+}
+
 // calling addtracking
 // async function updateTracking() {
 //   const email_id = await localStorage.getItem("email_id");
