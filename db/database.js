@@ -542,6 +542,34 @@ const getLikedUsers = async (email) => {
   }
 };
 
+const searchForUser = async (searchString) => {
+  try {
+    const userResult = await client.query(
+      "select email_id, username from users where username like $1 or email_id like $2",
+      ["%" + searchString + "%", "%" + searchString + "%"]
+    );
+    return userResult.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return [];
+  }
+};
+
+const searchForBlog = async (searchString) => {
+  // search the username and blog title and subject
+  // blog search
+  try {
+    const blogResult = await client.query(
+      "select blog_id, title, subject from blogs where visibility = 0 and (title like $1 or subject like $2)",
+      ["%" + searchString + "%", "%" + searchString + "%"]
+    );
+    return blogResult.rows;
+  } catch (e) {
+    console.log(e.stack);
+    return [];
+  }
+};
+
 module.exports = {
   checkUser,
   getUserDetail,
@@ -572,5 +600,7 @@ module.exports = {
   updateInterestsIncrease,
   updateInterestsDecrease,
   getLikedUsers,
+  searchForBlog,
+  searchForUser,
   categories,
 };

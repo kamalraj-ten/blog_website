@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,27 +13,103 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Blog Website</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link {{home}}" href="/blogHome">Blog Home</a></li>
-                <li class="nav-item"><a class="nav-link {{user_sug}}" href="/user_suggestions">Bloger Suggestion</a></li>
-                <li class="nav-item"><a class="nav-link {{trending}}" href="/trending">Trending Blog</a></li>
-                <li class="nav-item"><a class="nav-link {{create}}" href="/create_blog">Create blog</a></li>
-                <li class="nav-item"><a class="nav-link {{profile}}" href="/user/{{email}}">My profile</a></li>
-            </ul>
-            <div class="nav-item link-dark btn border-0" onclick="logout()">
-              Logout
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a
+                class="nav-link {{home}}"
+                href="/blogHome"
+              >Blog Home</a></li>
+            <li class="nav-item"><a
+                class="nav-link {{user_sug}}"
+                href="/user_suggestions"
+              >Bloger Suggestion</a></li>
+            <li class="nav-item"><a
+                class="nav-link {{trending}}"
+                href="/trending"
+              >Trending Blog</a></li>
+            <li class="nav-item"><a
+                class="nav-link {{create}}"
+                href="/create_blog"
+              >Create blog</a></li>
+            <li class="nav-item"><a
+                class="nav-link {{profile}}"
+                href="/user/{{email}}"
+              >My profile</a></li>
+          </ul>
+          <div class="nav-item link-dark btn border-0" onclick="logout()">
+            Logout
           </div>
-          <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
+        </div>
+        <form class="d-flex">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            id="search-text"
+          />
+          <button
+            class="btn btn-outline-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+            onclick="loadSearch()"
+          >Search</button>
+        </form>
       </div>
     </nav>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="false"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Search Result</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+              <h4>Blogs</h4>
+              <div id="search-result-blog"></div>
+              <hr class="mb-3 mt-3" />
+              <h4>Users</h4>
+              <div id="search-result-user"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
     {{{body}}}
   </body>
 </html>
