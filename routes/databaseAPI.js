@@ -62,7 +62,6 @@ router.post("/sign_up/", async (req, res) => {
   res.send(response);
 });
 
-<<<<<<< HEAD
 router.post('/blog',async (req,res)=>{
   let user = auth.verifyToken(req.cookies.token)
   if(user === null){
@@ -95,7 +94,6 @@ router.post('/blog',async (req,res)=>{
 })
 
 module.exports = router
-=======
 router.get("/user_search/:text/", async (req, res) => {
   const result = await Database.searchForUser(req.params.text);
   //console.log("result", result);
@@ -114,4 +112,3 @@ router.get("/", (req, res) => {
 });
 
 module.exports = router;
->>>>>>> 9838cd29195e43ba775ed86f799e6b12633cb60e
