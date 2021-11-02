@@ -204,7 +204,7 @@ const createBlog = async (
 
     return true;
   } catch (e) {
-    console.log(e.stack);
+    console.log(e);
     return false; // failure
   }
 };

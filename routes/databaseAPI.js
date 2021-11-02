@@ -1,14 +1,14 @@
 const express = require('express')
 const Database = require('../db/database')
 const router = express.Router()
-const auth = require('../db/auth')
+const auth = require('../db/auth');
+const { json } = require('express');
 const categories = Database.categories;
 
 router.post("/sign_in/", async (req, res) => {
     const user = await Database.checkUser(
       req.body["email_id"],
-      req.body["password"],
-      time= new Date()
+      req.body["password"]
     );
     if(user === null){
       res.render('login',{layout:'no_nav_main',Invalid:'true'});
@@ -61,5 +61,36 @@ router.post("/sign_up/", async (req, res) => {
     );
     res.send(response)
 });
+
+router.post('/blog',async (req,res)=>{
+  let user = auth.verifyToken(req.cookies.token)
+  if(user === null){
+    res.clearCookie('token')
+    res.redirect('/login')
+  }
+  let data = JSON.parse(JSON.stringify(req.body))
+  let blog = {
+    email_id: user.email_id,
+    title: data["blogTitle"],
+    subject: data["blogSubject"],
+    content: data["blogContent"],
+    visibility: 1,
+    categoryVector: ""
+  }
+  if(data["visibility"] == 'public'){
+    blog.visibility=0
+  }
+  data["category"].sort();
+  var i = 0;
+  var j = 0;
+  for (; i < categories.length; ++i) {
+    if (categories[i] === data["category"][j]) {
+      blog.categoryVector += 1;
+      ++j;
+    } else blog.categoryVector += 0;
+  }
+  let flag = await Database.createBlog(blog.title,blog.visibility,blog.content,blog.categoryVector,blog.email_id,blog.subject)
+  res.send(JSON.stringify(flag))
+})
 
 module.exports = router

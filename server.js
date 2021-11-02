@@ -111,10 +111,12 @@ app.get("/create_blog",async (req,res)=>{
     res.clearCookie("token");
     return res.redirect("/login");
   }
-  res.render('create_blog',{
+  let categories = Database.categories
+  res.render('create_blog_copy',{
     create:'active',
     username: cur_user.username,
-    email: cur_user.email_id
+    email: cur_user.email_id,
+    categories,
   })
 })
 
