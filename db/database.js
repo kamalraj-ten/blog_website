@@ -107,6 +107,19 @@ const getBlogById = async (blog_id) => {
   }
 };
 
+const getPrivateBlog = async (blog_id,email_id) => {
+  try {
+    var result = await client.query("SELECT * FROM blogs WHERE blog_id = $1 AND email_id = $2", [
+      blog_id,
+      email_id
+    ]);
+    return result.rows[0];
+  } catch (e) {
+    console.log(e.stack);
+    return null;
+  }
+};
+
 const getBlogByTitle = async (title) => {
   try {
     var result = await client.query("SELECT * FROM blogs WHERE title LIKE $1", [
@@ -127,6 +140,18 @@ const getBlogByEmail = async (email_id) => {
     ]);
     const visibleBlogs = result.rows.filter((blog) => blog["visibility"] == 0);
     return visibleBlogs;
+  } catch (e) {
+    console.log(e.stack);
+    return null;
+  }
+};
+
+const getMyBlogs = async (email_id) => {
+  try {
+    var result = await client.query("SELECT * FROM blogs WHERE email_id = $1", [
+      email_id,
+    ]);
+    return result.rows;
   } catch (e) {
     console.log(e.stack);
     return null;
@@ -339,9 +364,9 @@ const addBlogView = async (email_id, blog_id, date = new Date()) => {
 const getBlogSortedByViews = async () => {
   try {
     const res = await client.query(
-      "select blogs.blog_id, title, subject, count(bloglikes.blog_id) as like_count, count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id left outer join bloglikes on blogs.blog_id = bloglikes.blog_id group by blogs.blog_id order by count desc, like_count desc"
+      "select blogs.blog_id, visibility, title, subject, count(bloglikes.blog_id) as like_count, count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id left outer join bloglikes on blogs.blog_id = bloglikes.blog_id group by blogs.blog_id order by count desc, like_count desc"
     );
-    return res.rows;
+    return res.rows.filter(blog => blog["visibility"]==0)
   } catch (e) {
     console.log(e.stack);
     return [];
@@ -350,8 +375,7 @@ const getBlogSortedByViews = async () => {
 
 const getBlogCategories = async () => {
   try {
-    const res = await client.query("SELECT blog_id, categories FROM blogs");
-
+    const res = await client.query("SELECT blog_id, categories FROM blogs where visibility=0");
     return res.rows;
   } catch (e) {
     console.log(e.stack);
@@ -602,5 +626,7 @@ module.exports = {
   getLikedUsers,
   searchForBlog,
   searchForUser,
-  categories,
+  getMyBlogs,
+  getPrivateBlog,
+  categories
 };

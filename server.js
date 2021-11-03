@@ -44,6 +44,9 @@ app.get("/blog/:id/", async (req, res) => {
   }
   let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
+  if(blogData===null){
+    blogData = await Database.getPrivateBlog(req.params.id,user.email_id)
+  }
   let render_data = {
     username: user.username,
     owner: false,
@@ -88,12 +91,14 @@ app.get("/blogHome/", async (req, res) => {
   var suggestions = [];
   for (var i = 0; i < blogSuggestions.length; ++i) {
     const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
-    suggestions.push({
-      title: blog.title,
-      subject: blog.subject,
-      link: "/blog/" + blog.blog_id,
-      action: "Open",
-    });
+    if(blog!=null){
+      suggestions.push({
+        title: blog.title,
+        subject: blog.subject,
+        link: "/blog/" + blog.blog_id,
+        action: "Open",
+      })
+    }
   }
   res.render("suggestion_page", {
     suggestion_title: "Blog Home",
@@ -171,7 +176,14 @@ app.get("/user/:id/", async (req, res) => {
   const blog_count = await Database.getBlogCount(req.params.id);
   const isFollowing =
     (await Database.isFollowing(cur_user.email_id, req.params.id)) == 1;
-  const userBlogs = await Database.getBlogByEmail(req.params.id);
+  let userBlogs
+  let profile = 'false'
+  if(user.email_id == cur_user.email_id){
+    userBlogs = await Database.getMyBlogs(cur_user.email_id);
+    profile = 'active'
+  }else{
+    userBlogs = await Database.getBlogByEmail(req.params.id);
+  }
   const chart_load_function = 'loadChart("' + req.params.id + '")';
   const blogs = [];
   for (var i = 0; i < userBlogs.length; ++i) {
@@ -194,7 +206,8 @@ app.get("/user/:id/", async (req, res) => {
     blog_count,
     blogs,
     chart_load_function,
-    user_email: cur_user.email_id,
+    profile,
+    user_email: cur_user.email_id
   });
 });
 

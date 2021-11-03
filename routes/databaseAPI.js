@@ -80,17 +80,37 @@ router.post('/blog',async (req,res)=>{
   if(data["visibility"] == 'public'){
     blog.visibility=0
   }
-  data["category"].sort();
-  var i = 0;
-  var j = 0;
-  for (; i < categories.length; ++i) {
-    if (categories[i] === data["category"][j]) {
-      blog.categoryVector += 1;
-      ++j;
-    } else blog.categoryVector += 0;
+  if(data["category"]==null){
+    return res.render('create_blog',{
+      blogTitle: blog.title,
+      blogContent: blog.content,
+      blogSubject: blog.subject,
+      categories,
+      message : 'Please select atleast one category',
+      alertBorder: 'border border-danger border-2'
+    })
+  }else{
+    if(typeof(data["category"]) == 'string'){
+      data["category"] = [data["category"]]
+    }
+    data["category"].sort()
+    var i = 0
+    var j = 0
+    for (; i < categories.length; ++i) {
+      if (categories[i] === data["category"][j]) {
+        blog.categoryVector += 1
+        ++j
+      } else blog.categoryVector += 0
+    }
   }
   let flag = await Database.createBlog(blog.title,blog.visibility,blog.content,blog.categoryVector,blog.email_id,blog.subject)
   res.send(JSON.stringify(flag))
+  if(flag==true){
+    //alert user that blog is created (use modal to show message), then redirect to main page
+  }
+  else{
+    //alert user that blog is not created (use modal to show message), then redirect to main page
+  }
 })
 
 module.exports = router
