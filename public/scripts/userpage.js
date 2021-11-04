@@ -146,6 +146,7 @@ async function loadSearch() {
   if (!searchText.trim()) {
     // empty string
     modalBlog.innerHTML = "<h2>Please enter some text to search</h2>";
+    modalUser.innerHTML = "";
     return;
   }
 
