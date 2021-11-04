@@ -88,6 +88,9 @@ app.get("/blogHome/", async (req, res) => {
   }
   const blogSuggestions = await Analytics.blogSuggestion(user.email_id);
   var suggestions = [];
+  var blog_ids = blogSuggestions.map((b) => b.blog_id);
+  //console.log("blog ids", blog_ids);
+  const likes = await Database.getMultipleBlogLikeCount(blog_ids);
   for (var i = 0; i < blogSuggestions.length; ++i) {
     const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
     if (blog != null) {
@@ -96,6 +99,8 @@ app.get("/blogHome/", async (req, res) => {
         subject: blog.subject,
         link: "/blog/" + blog.blog_id,
         action: "Open",
+        likes: likes[i] ? likes[i] : 0,
+        showLikes: true,
       });
     }
   }
@@ -227,6 +232,10 @@ app.get("/trending/", async (req, res) => {
       subject: b.subject,
       action: "Open",
       link: "/blog/" + b.blog_id,
+      showLikes: true,
+      likes: b.like_count,
+      showViews: true,
+      views: b.count,
     };
   });
   res.render("suggestion_page", {

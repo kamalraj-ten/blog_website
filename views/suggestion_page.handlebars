@@ -3,11 +3,19 @@
   <h4 class="mt-3">{{hint}}</h4>
   <div class="row row-cols-3">
     {{#each suggestions}}
-      <div class="card w-25 m-3">
+      <div class="card bg-dark text-light shadow w-25 m-3">
         <div class="card-body">
           <h5 class="card-title">{{this.title}}</h5>
           <p class="card-text">{{this.subject}}</p>
+        </div>
+        <div class="card-footer">
           <a href={{this.link}} class="btn btn-primary">{{this.action}}</a>
+          {{#if this.showLikes}}
+            <div class="badge bg-danger ml-5">{{likes}} likes</div>
+          {{/if}}
+          {{#if this.showViews}}
+            <div class="badge bg-success">{{views}} views</div>
+          {{/if}}
         </div>
       </div>
     {{/each}}

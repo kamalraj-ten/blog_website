@@ -107,12 +107,12 @@ const getBlogById = async (blog_id) => {
   }
 };
 
-const getPrivateBlog = async (blog_id,email_id) => {
+const getPrivateBlog = async (blog_id, email_id) => {
   try {
-    var result = await client.query("SELECT * FROM blogs WHERE blog_id = $1 AND email_id = $2", [
-      blog_id,
-      email_id
-    ]);
+    var result = await client.query(
+      "SELECT * FROM blogs WHERE blog_id = $1 AND email_id = $2",
+      [blog_id, email_id]
+    );
     return result.rows[0];
   } catch (e) {
     console.log(e.stack);
@@ -366,7 +366,7 @@ const getBlogSortedByViews = async () => {
     const res = await client.query(
       "select blogs.blog_id, visibility, title, subject, count(bloglikes.blog_id) as like_count, count(*) from blogs inner join blogviews on blogviews.blog_id = blogs.blog_id left outer join bloglikes on blogs.blog_id = bloglikes.blog_id group by blogs.blog_id order by count desc, like_count desc"
     );
-    return res.rows.filter(blog => blog["visibility"]==0)
+    return res.rows.filter((blog) => blog["visibility"] == 0);
   } catch (e) {
     console.log(e.stack);
     return [];
@@ -375,7 +375,9 @@ const getBlogSortedByViews = async () => {
 
 const getBlogCategories = async () => {
   try {
-    const res = await client.query("SELECT blog_id, categories FROM blogs where visibility=0");
+    const res = await client.query(
+      "SELECT blog_id, categories FROM blogs where visibility=0"
+    );
     return res.rows;
   } catch (e) {
     console.log(e.stack);
@@ -594,18 +596,50 @@ const searchForBlog = async (searchString) => {
   }
 };
 
-const updateBlogByID = async (blog_id, title, subject , content, visibility, categories) => {
+const updateBlogByID = async (
+  blog_id,
+  title,
+  subject,
+  content,
+  visibility,
+  categories
+) => {
   try {
     const blogResult = await client.query(
       "UPDATE blogs SET title=$1,subject=$2,context=$3,visibility=$4,categories=$5 where blog_id=$6",
-      [title,subject,content,visibility,categories,blog_id]
+      [title, subject, content, visibility, categories, blog_id]
     );
     return true;
   } catch (e) {
     console.log(e.stack);
     return false;
   }
-}
+};
+
+const getMultipleBlogLikeCount = async (blog_ids) => {
+  try {
+    const params = [];
+    for (var i = 1; i <= blog_ids.length; ++i) params.push("$" + i);
+    const queryString =
+      "SELECT blog_id, COUNT(email_id) AS likes FROM bloglikes WHERE blog_id IN (" +
+      params.join(",") +
+      ") GROUP BY blog_id";
+    const res = await client.query(queryString, blog_ids);
+    var result = {};
+    for (var i = 0; i < res.rows.length; ++i) {
+      result[res.rows[i].blog_id] = res.rows[i].likes;
+    }
+    //console.log(result);
+    return result;
+  } catch (e) {
+    console.log(e);
+    var res = {};
+    for (id in blog_ids) {
+      res[id] = 0;
+    }
+    return res;
+  }
+};
 
 module.exports = {
   checkUser,
@@ -642,5 +676,6 @@ module.exports = {
   getMyBlogs,
   getPrivateBlog,
   updateBlogByID,
-  categories
+  getMultipleBlogLikeCount,
+  categories,
 };
