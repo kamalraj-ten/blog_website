@@ -4,22 +4,24 @@
       <div class="row">
         <h1 class="pl-3 display-6 w-50">{{name}}</h1>
         <span>
-          {{#if isFollowing}}
-            <form action="/unfollow_user" method="post">
-              <input type="hidden" name="follower" value={{email}} />
-              <input type="hidden" name="following" value={{trg_email_id}} />
-              <input
-                class="btn btn-secondary"
-                type="submit"
-                value="following"
-              />
-            </form>
-          {{else}}
-            <form action="/follow_user" method="post">
-              <input type="hidden" name="follower" value={{email}} />
-              <input type="hidden" name="following" value={{trg_email_id}} />
-              <input class="btn btn-primary" type="submit" value="Follow" />
-            </form>
+          {{#if stopFollow}}{{else}}
+            {{#if isFollowing}}
+              <form action="/unfollow_user" method="post">
+                <input type="hidden" name="follower" value={{email}} />
+                <input type="hidden" name="following" value={{trg_email_id}} />
+                <input
+                  class="btn btn-secondary"
+                  type="submit"
+                  value="following"
+                />
+              </form>
+            {{else}}
+              <form action="/follow_user" method="post">
+                <input type="hidden" name="follower" value={{email}} />
+                <input type="hidden" name="following" value={{trg_email_id}} />
+                <input class="btn btn-primary" type="submit" value="Follow" />
+              </form>
+            {{/if}}
           {{/if}}
         </span>
       </div>
@@ -28,22 +30,43 @@
   <small class="text-muted mt-2 mb-3">{{trg_email_id}}
     |
     {{trg_username}}</small>
-  <div class="row">
-    <span class="w-50 border">Followers
-      <span class="display-6">{{follower}}</span></span>
-    <span class="w-50 border">Following
-      <span class="display-6">{{following}}</span></span>
+  <div class="row mt-2">
+    <div
+      class="card bg-danger col-sm-3 shadow m-3 text-light text-center hover-card"
+    >
+      <div class="card-title">Followers</div>
+      <div class="card-body display-2 bold">
+        {{follower}}
+      </div>
+    </div>
+    <div
+      class="card bg-danger col-sm-3 shadow m-3 text-light text-center hover-card"
+    >
+      <div class="card-title">Following</div>
+      <div class="card-body display-2 bold">
+        {{following}}
+      </div>
+    </div>
+    <div
+      class="card bg-danger col-sm-3 shadow m-3 text-light text-center hover-card"
+    >
+      <div class="card-title">Blogs written</div>
+      <div class="card-body display-2 bold">
+        {{blog_count}}
+      </div>
+    </div>
   </div>
-  <div>Blogs Written <span class="display-6">{{blog_count}}</span></div>
   <div class="container mt-5 border bg-light">
     <h5>Written blogs</h5>
     {{#if blog_count}}
-      <div class="row-cols-4 mt-2">
+      <div class="row mt-2">
         {{#each blogs}}
-          <div class="card w-25 p-2">
+          <div class="card w-25 m-2 bg-dark shadow text-light p-2">
             <div class="card-body">
               <h5 class="card-title">{{this.title}}</h5>
               <p class="card-text">{{this.subject}}</p>
+              <div class="badge bg-danger mb-2">{{likes}} likes</div>
+              <br />
               <a href={{this.link}} class="btn btn-primary">{{this.action}}</a>
             </div>
           </div>
@@ -54,9 +77,11 @@
     {{/if}}
   </div>
   <hr />
-  <div class="container m-5">
+  <div class="container mt-2 mb-2">
     <button onclick={{chart_load_function}} class="btn btn-primary mb-2">Load
       tracking</button>
+  </div>
+  <div class="container m-5">
     <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
   </div>
 </div>

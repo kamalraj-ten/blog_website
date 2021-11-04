@@ -7,7 +7,6 @@ const exphbs = require("express-handlebars");
 const auth = require("./db/auth");
 const cookieParser = require("cookie-parser");
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -44,8 +43,8 @@ app.get("/blog/:id/", async (req, res) => {
   }
   let trg_email = user.email_id;
   let blogData = await Database.getBlogById(req.params.id);
-  if(blogData===null){
-    blogData = await Database.getPrivateBlog(req.params.id,user.email_id)
+  if (blogData === null) {
+    blogData = await Database.getPrivateBlog(req.params.id, user.email_id);
   }
   let render_data = {
     username: user.username,
@@ -91,39 +90,39 @@ app.get("/blogHome/", async (req, res) => {
   var suggestions = [];
   for (var i = 0; i < blogSuggestions.length; ++i) {
     const blog = await Database.getBlogById(blogSuggestions[i].blog_id);
-    if(blog!=null){
+    if (blog != null) {
       suggestions.push({
         title: blog.title,
         subject: blog.subject,
         link: "/blog/" + blog.blog_id,
         action: "Open",
-      })
+      });
     }
   }
   res.render("suggestion_page", {
     suggestion_title: "Blog Home",
     username: user.username,
-    home:'active',
-    hint: 'Blogs you might like, based on your activity',
+    home: "active",
+    hint: "Blogs you might like, based on your activity",
     email: user.email_id,
     suggestions,
   });
 });
 
-app.get("/create_blog",async (req,res)=>{
-  let cur_user = auth.verifyToken(req.cookies.token)
+app.get("/create_blog", async (req, res) => {
+  let cur_user = auth.verifyToken(req.cookies.token);
   if (cur_user === null) {
     res.clearCookie("token");
     return res.redirect("/login");
   }
-  let categories = Database.categories
-  res.render('create_blog',{
-    create:'active',
+  let categories = Database.categories;
+  res.render("create_blog", {
+    create: "active",
     username: cur_user.username,
     email: cur_user.email_id,
     categories,
-  })
-})
+  });
+});
 
 app.get("/user_suggestions/", async (req, res) => {
   const cur_user = auth.verifyToken(req.cookies.token);
@@ -144,8 +143,8 @@ app.get("/user_suggestions/", async (req, res) => {
   }
   res.render("suggestion_page", {
     suggestion_title: "Blogger suggestions",
-    user_sug:'active',
-    hint: 'People you might like, based on your activity',
+    user_sug: "active",
+    hint: "People you might like, based on your activity",
     username: cur_user.username,
     email: cur_user.email_id,
     blog_suggestion: false,
@@ -154,14 +153,11 @@ app.get("/user_suggestions/", async (req, res) => {
   });
 });
 
-
-app.get("/login", (req, res) => 
-  res.render("login", { layout: "no_nav_main" })
-)
+app.get("/login", (req, res) => res.render("login", { layout: "no_nav_main" }));
 
 app.get("/sign_up/", (req, res) =>
   res.render("signup", { layout: "no_nav_main" })
-)
+);
 
 app.get("/user/:id/", async (req, res) => {
   // email_id is the current user email_id
@@ -176,22 +172,28 @@ app.get("/user/:id/", async (req, res) => {
   const blog_count = await Database.getBlogCount(req.params.id);
   const isFollowing =
     (await Database.isFollowing(cur_user.email_id, req.params.id)) == 1;
-  let userBlogs
-  let profile = 'false'
-  if(user.email_id == cur_user.email_id){
+  let userBlogs;
+  let profile = "false";
+  let stopFollow = false;
+
+  if (user.email_id == cur_user.email_id) {
     userBlogs = await Database.getMyBlogs(cur_user.email_id);
-    profile = 'active'
-  }else{
+    profile = "active";
+    stopFollow = true;
+  } else {
     userBlogs = await Database.getBlogByEmail(req.params.id);
   }
+
   const chart_load_function = 'loadChart("' + req.params.id + '")';
   const blogs = [];
   for (var i = 0; i < userBlogs.length; ++i) {
+    const likes = await Database.getBlogLikeCount(userBlogs[i].blog_id);
     blogs.push({
       title: userBlogs[i].title,
       subject: userBlogs[i].subject,
       link: "/blog/" + userBlogs[i].blog_id,
       action: "Open",
+      likes,
     });
   }
   res.render("userpage", {
@@ -207,7 +209,8 @@ app.get("/user/:id/", async (req, res) => {
     blogs,
     chart_load_function,
     profile,
-    user_email: cur_user.email_id
+    user_email: cur_user.email_id,
+    stopFollow,
   });
 });
 
@@ -227,11 +230,11 @@ app.get("/trending/", async (req, res) => {
     };
   });
   res.render("suggestion_page", {
-    trending: 'active',
+    trending: "active",
     suggestion_title: "Trending blogs",
     suggestions,
     username: cur_user.username,
-    email: cur_user.email_id
+    email: cur_user.email_id,
   });
 });
 
@@ -270,57 +273,56 @@ app.post("/unfollow_user", async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  let user = auth.verifyToken(req.cookies.token)
+  let user = auth.verifyToken(req.cookies.token);
   if (user != null) {
-    auth.deleteToken(req.cookies.token)
+    auth.deleteToken(req.cookies.token);
   }
-  res.clearCookie("token")
-  res.redirect("/login")
+  res.clearCookie("token");
+  res.redirect("/login");
 });
 
-app.get('/blog_edit/:id',async (req,res)=>{
-  let categories = Database.categories
-  let user = auth.verifyToken(req.cookies.token)
-  if(user === null){
-    res.clearCookie('token')
-    res.redirect('/login')
+app.get("/blog_edit/:id", async (req, res) => {
+  let categories = Database.categories;
+  let user = auth.verifyToken(req.cookies.token);
+  if (user === null) {
+    res.clearCookie("token");
+    res.redirect("/login");
   }
-  let blog = await Database.getBlogById(req.params.id)
-  if(blog===null){
-    blog = await Database.getPrivateBlog(req.params.id,user.email_id)
+  let blog = await Database.getBlogById(req.params.id);
+  if (blog === null) {
+    blog = await Database.getPrivateBlog(req.params.id, user.email_id);
   }
-  let blogCategory = []
-  let visibility_public,visibility_private;
-  if(blog.visibility === 1){
-    visibility_private = 'checked'
-  }else{
-    visibility_public = 'checked'
+  let blogCategory = [];
+  let visibility_public, visibility_private;
+  if (blog.visibility === 1) {
+    visibility_private = "checked";
+  } else {
+    visibility_public = "checked";
   }
-  for(let i=0;i<blog.categories.length;i++){
-    if(blog.categories.charAt(i)==0){
+  for (let i = 0; i < blog.categories.length; i++) {
+    if (blog.categories.charAt(i) == 0) {
       blogCategory.push({
-          category:categories[i],
-          style: 'btn btn-outline-success'
-        })
-    }
-    else{
+        category: categories[i],
+        style: "btn btn-outline-success",
+      });
+    } else {
       blogCategory.push({
-        category:categories[i],
-        style: 'btn btn-success',
-        checked:'checked'
-      })
+        category: categories[i],
+        style: "btn btn-success",
+        checked: "checked",
+      });
     }
   }
-  res.render('editBlog',{
-    blogTitle:blog.title,
+  res.render("editBlog", {
+    blogTitle: blog.title,
     blogSubject: blog.subject,
     blogContent: blog.context,
     blogCategory,
     visibility_private,
     visibility_public,
-    blog_id: req.params.id
-  })
-})
+    blog_id: req.params.id,
+  });
+});
 
 //route for all invalid url
 app.get("*", function (req, res) {

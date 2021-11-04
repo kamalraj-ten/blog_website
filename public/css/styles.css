@@ -1,0 +1,8 @@
+.hover-card:hover {
+  padding: 0px;
+  font-size: large;
+}
+
+.hover-card {
+  transition: font-size 1s;
+}
