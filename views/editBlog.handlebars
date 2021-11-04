@@ -1,0 +1,55 @@
+<script src="/scripts/categories_toggle.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<div class="container mt-5">
+    <form action="/database/blog_edit/{{blog_id}}" method="post">
+        <div class="form-group row m-2">
+            <label for="blog-title" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+                <input type="Title" class="form-control" name="blogTitle" placeholder="Title" required minlength="10" value="{{blogTitle}}">
+            </div>
+            <br>
+        </div>
+        <div class="form-group row m-2">
+            <label for="blog-subject" class="col-sm-2 col-form-label">Subject</label>
+            <div class="col-sm-10">
+                <input type="subject" class="form-control" name="blogSubject" placeholder="subject" required minlength="10" value="{{blogSubject}}">
+            </div>
+        </div><br>
+        <div class="d-none" id="prev_data">
+            {{{blogContent}}}
+        </div>
+        <div class="mb-3">
+            <label for="blog-content" class="form-label">Content</label>
+            <textarea class="form-control" name="blogContent" rows="3" required minlength="50"></textarea>
+            <script>
+                CKEDITOR.replace('blogContent',{
+                    plugin:'wysiwygarea, toolbar, basicstyles, link'
+                })
+                CKEDITOR.instances.blogContent.setData(document.getElementById('prev_data').innerHTML)
+            </script>
+        </div>
+        <div>
+            <label for="blog_visibility">Blog visibliity: </label>
+            <div id="blog_visibility" class="d-inline container ">
+                <label for="visibility">Public</label>
+                <input type="radio" name="visibility" value="public" aria-selected="true" {{visibility_public}}>
+                <p class="d-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                <label for="visibility_private_btn">Private</label>
+                <input type="radio" name="visibility" value="private" {{visibility_private}}>
+            </div>
+        </div>
+        <label class="mt-5" for="categories">Categories <p class="text-danger">{{message}}</p></label>
+        <div class="container row row-cols-4 mt-2 {{alertBorder}}" id="categories">
+            {{#each blogCategory}}
+                <span class="btn {{this.style}} m-3" onclick="toggle(this)" >
+                    <input type="checkbox" name="category" value={{this.category}} class="d-none" {{this.checked}}>
+                    <label style="cursor: pointer;" for="category">{{this.category}}</label>
+                </span>
+            {{/each}}
+        </div>
+        <div class="mb-5 mt-5">
+            <label for="publish-btn">Save Changes&nbsp;&nbsp;</label>
+            <input id="publish-btn" type="submit" class="btn btn-outline-success" value="Save">
+        </div>
+    </form>
+</div>

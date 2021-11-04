@@ -594,6 +594,19 @@ const searchForBlog = async (searchString) => {
   }
 };
 
+const updateBlogByID = async (blog_id, title, subject , content, visibility, categories) => {
+  try {
+    const blogResult = await client.query(
+      "UPDATE blogs SET title=$1,subject=$2,context=$3,visibility=$4,categories=$5 where blog_id=$6",
+      [title,subject,content,visibility,categories,blog_id]
+    );
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+}
+
 module.exports = {
   checkUser,
   getUserDetail,
@@ -628,5 +641,6 @@ module.exports = {
   searchForUser,
   getMyBlogs,
   getPrivateBlog,
+  updateBlogByID,
   categories
 };

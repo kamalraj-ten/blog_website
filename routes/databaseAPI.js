@@ -113,16 +113,77 @@ router.post('/blog',async (req,res)=>{
   }
 })
 
-module.exports = router
+
+router.post('/blog_edit/:id',async (req,res)=>{
+  let user = auth.verifyToken(req.cookies.token)
+  if(user === null){
+    res.clearCookie('token')
+    res.redirect('/login')
+  }
+  let data = JSON.parse(JSON.stringify(req.body))
+  let visibility_private = 'checked',visibility_public
+  let blog = {
+    email_id: user.email_id,
+    title: data["blogTitle"],
+    subject: data["blogSubject"],
+    content: data["blogContent"],
+    visibility: 1,
+    categoryVector: ""
+  }
+  if(data["visibility"] == 'public'){
+    blog.visibility=0
+    visibility_private = null
+    visibility_public = 'checked'
+  }
+  if(data["category"]==null){
+    let blogCategory=[]
+    for(let i=0;i<categories.length;i++){
+      blogCategory.push({
+          category:categories[i],
+          style: 'btn btn-outline-success'
+        })
+    }
+    return res.render('editBlog',{
+      blogTitle: blog.title,
+      blogContent: blog.content,
+      blogSubject: blog.subject,
+      blogCategory,
+      visibility_public,
+      visibility_private,
+      blog_id: req.params.id,
+      message : 'Please select atleast one category',
+      alertBorder: 'border border-danger border-2'
+    })
+  }else{
+    if(typeof(data["category"]) == 'string'){
+      data["category"] = [data["category"]]
+    }
+    data["category"].sort()
+    var j = 0
+    for (var i = 0; i < categories.length; ++i) {
+      if (categories[i] === data["category"][j]) {
+        blog.categoryVector += 1
+        ++j
+      } else blog.categoryVector += 0
+    }
+  }
+  let flag = await Database.updateBlogByID(req.params.id,blog.title,blog.subject,blog.content,blog.visibility,blog.categoryVector)
+  res.send(JSON.stringify(flag))
+  if(flag==true){
+    //alert user that blog is created (use modal to show message), then redirect to main page
+  }else{
+    //alert user that blog is not created (use modal to show message), then redirect to main page
+  }
+})
+
+
 router.get("/user_search/:text/", async (req, res) => {
   const result = await Database.searchForUser(req.params.text);
-  //console.log("result", result);
   res.json({ data: result });
 });
 
 router.get("/blog_search/:text/", async (req, res) => {
   const result = await Database.searchForBlog(req.params.text);
-  //console.log("blog", result);
   res.json({ data: result });
 });
 

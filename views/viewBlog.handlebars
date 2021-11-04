@@ -2,15 +2,9 @@
     <div class="d-flex justify-content-between mb-0 align-items-center">
         <div class="h1">{{blog.title}}</div>
         {{#if owner}}
-            <div class="dropdown ">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown button
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+            <div class="d-flex">
+                <input id = "link" type="button" class="btn btn-outline-success m-1" onclick="window.location.href = '/blog_edit/{{blog.blog_id}}'" value="Edit">
+                <input type="button" class="btn btn-outline-danger m-1" onclick="" value="Delete">
             </div>
         {{/if}}
     </div>

@@ -278,6 +278,50 @@ app.get("/logout", (req, res) => {
   res.redirect("/login")
 });
 
+app.get('/blog_edit/:id',async (req,res)=>{
+  let categories = Database.categories
+  let user = auth.verifyToken(req.cookies.token)
+  if(user === null){
+    res.clearCookie('token')
+    res.redirect('/login')
+  }
+  let blog = await Database.getBlogById(req.params.id)
+  if(blog===null){
+    blog = await Database.getPrivateBlog(req.params.id,user.email_id)
+  }
+  let blogCategory = []
+  let visibility_public,visibility_private;
+  if(blog.visibility === 1){
+    visibility_private = 'checked'
+  }else{
+    visibility_public = 'checked'
+  }
+  for(let i=0;i<blog.categories.length;i++){
+    if(blog.categories.charAt(i)==0){
+      blogCategory.push({
+          category:categories[i],
+          style: 'btn btn-outline-success'
+        })
+    }
+    else{
+      blogCategory.push({
+        category:categories[i],
+        style: 'btn btn-success',
+        checked:'checked'
+      })
+    }
+  }
+  res.render('editBlog',{
+    blogTitle:blog.title,
+    blogSubject: blog.subject,
+    blogContent: blog.context,
+    blogCategory,
+    visibility_private,
+    visibility_public,
+    blog_id: req.params.id
+  })
+})
+
 //route for all invalid url
 app.get("*", function (req, res) {
   res.redirect("/login");
