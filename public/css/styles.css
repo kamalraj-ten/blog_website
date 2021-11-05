@@ -6,3 +6,28 @@
 .hover-card {
   transition: font-size 1s;
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  background: linear-gradient(
+    -45deg,
+    #a9a9a9,
+    #b2beb5,
+    #ffffff,
+    #ffffff,
+    #a9a9a9
+  );
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
