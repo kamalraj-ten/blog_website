@@ -20,14 +20,7 @@
 }
 
 body {
-  background: linear-gradient(
-    -45deg,
-    #a9a9a9,
-    #b2beb5,
-    #ffffff,
-    #ffffff,
-    #a9a9a9
-  );
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  background: linear-gradient(-45deg, #ffffff, #a9a9a9, #fff, #c0c0c0);
+  background-size: 300% 300%;
+  animation: gradient 8s ease infinite;
 }
