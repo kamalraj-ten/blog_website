@@ -79,9 +79,13 @@ function selectInterest(event) {
   const classlist = event.srcElement.classList;
   if (classlist.contains("checked")) {
     classlist.remove("checked");
+    classlist.remove('btn-success')
+    classlist.add('btn-outline-success')
     interests = interests.filter((ele) => ele !== srcText);
   } else {
     classlist.add("checked");
+    classlist.remove('btn-outline-success')
+    classlist.add('btn-success')
     interests.push(srcText);
   }
   event.stopPropagation();
