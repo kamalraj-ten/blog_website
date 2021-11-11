@@ -139,7 +139,7 @@ app.get("/blogHome/", async (req, res) => {
     res.clearCookie("errorEditingBlog");
   }
   if (req.cookies["deletedBlog"]) {
-    data["display_message"] = "Delete the blog";
+    data["display_message"] = "Deleted the blog";
     data["display_bootstrap_class"] += "success";
     res.clearCookie("deletedBlog");
   }
@@ -371,6 +371,17 @@ app.get("/blog_edit/:id", async (req, res) => {
     visibility_public,
     blog_id: req.params.id,
   });
+});
+
+app.get("/blog/delete/:blog_id", async (req, res) => {
+  const blog_id = req.params.blog_id;
+  await Database.deleteBlog(blog_id);
+  res.cookie("deletedBlog", true, {
+    httpOnly: true,
+    secure: true,
+    sameSite: true,
+  });
+  res.redirect("/blogHome");
 });
 
 //route for all invalid url
