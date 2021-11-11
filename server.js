@@ -373,6 +373,17 @@ app.get("/blog_edit/:id", async (req, res) => {
   });
 });
 
+app.get("/blog/delete/:blog_id", async (req, res) => {
+  const blog_id = req.params.blog_id;
+  await Database.deleteBlog(blog_id);
+  res.cookie("deletedBlog", true, {
+    httpOnly: true,
+    secure: true,
+    sameSite: true,
+  });
+  res.redirect("/blogHome");
+});
+
 //route for all invalid url
 app.get("*", function (req, res) {
   res.redirect("/login");

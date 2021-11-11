@@ -1,63 +1,85 @@
 <div class="container mt-5">
-    <div class="d-flex justify-content-between mb-0 align-items-center">
-        <div class="h1">{{blog.title}}</div>
-        {{#if owner}}
-            <div class="d-flex">
-                <input id = "link" type="button" class="btn btn-outline-success m-1" onclick="window.location.href = '/blog_edit/{{blog.blog_id}}'" value="Edit">
-                <input type="button" class="btn btn-outline-danger m-1" onclick="" value="Delete">
-            </div>
-        {{/if}}
-    </div>
-    <div class="text-muted mt-0">{{blog.subject}}</div>
-    <div class="d-flex justify-content-between">
-        <div>Author: {{blog.email_id}}</div>
-        <div>created: {{blog.date}}</div>
-    </div>
-    <div class="border border-muted border-3 rounded mt-3 p-3">
-        {{{blog.context}}}
-    </div>
+  <div class="d-flex justify-content-between mb-0 align-items-center">
+    <div class="h1">{{blog.title}}</div>
+    {{#if owner}}
+      <div class="d-flex">
+        <input
+          id="link"
+          type="button"
+          class="btn btn-outline-success m-1"
+          onclick="window.location.href = '/blog_edit/{{blog.blog_id}}'"
+          value="Edit"
+        />
+        <input
+          type="button"
+          class="btn btn-outline-danger m-1"
+          onclick="window.location.href = '/blog/delete/{{blog.blog_id}}'"
+          value="Delete"
+        />
+      </div>
+    {{/if}}
+  </div>
+  <div class="text-muted mt-0">{{blog.subject}}</div>
+  <div class="d-flex justify-content-between">
+    <div>Author: {{blog.email_id}}</div>
+    <div>created: {{blog.date}}</div>
+  </div>
+  <div class="border border-muted border-3 rounded mt-3 p-3">
+    {{{blog.context}}}
+  </div>
 </div>
 
 <div class="container mt-3">
-    <form action="/api/like" method="post">
-    <input type="hidden" name="liked" value={{liked}}>
-    <input type="hidden" name="blog_id" value={{blog.blog_id}}>
-    <input type="hidden" name="email_id" value={{email}}>
-    <input type="hidden" name="username" value={{username}}>
+  <form action="/api/like" method="post">
+    <input type="hidden" name="liked" value={{liked}} />
+    <input type="hidden" name="blog_id" value={{blog.blog_id}} />
+    <input type="hidden" name="email_id" value={{email}} />
+    <input type="hidden" name="username" value={{username}} />
     {{#if liked}}
-    <input type="submit" class="btn btn-danger" value="Liked">
+      <input type="submit" class="btn btn-danger" value="Liked" />
     {{else}}
-    <input type="submit" class="btn btn-outline-danger" value="Like">
+      <input type="submit" class="btn btn-outline-danger" value="Like" />
     {{/if}}
     <span id="like_count" class="ml-1">{{like_count}}</span>
-    </form>
+  </form>
 </div>
 
 <section class="container mt-5 mb-5">
-    <div>Comments</div>
-    <form class="form-group" method="post" action="/api/add_comment">
-    <input type="text" id="comment" class="from-control border border-muted border-2 w-100" placeholder="Click to add comment" name="comment">
-    <input type="hidden" name="blog_id" value={{blog.blog_id}}>
-    <input type="hidden" name="email_id" value={{email}}>
-    <input type="hidden" name="username" value={{username}}>
-    <input type="button" class="d-none btn btn-outline-success mt-1" onclick="createComment()" value="Post Comment">
-    </form>
-    <div class="list-group list-group-flush">
-        {{#if emtCommentsList}}
-            <div class="container text-center mt-3">
-                <p>No Comments on this Blog!</p>
-            </div>
-        {{else}}
-            {{#each commentsList}}
-                <li class="list-group-item m-2">
-                    <div>
-                        <b>{{this.email_id}}  </b>
-                        <div class="muted d-inline">{{this.date}}</div>
-                        <br>
-                        <div class="ps-3">{{this.comment}}</div>
-                    </div>
-                </li>
-            {{/each}}
-        {{/if}}
-    </div>
+  <div>Comments</div>
+  <form class="form-group" method="post" action="/api/add_comment">
+    <input
+      type="text"
+      id="comment"
+      class="from-control border border-muted border-2 w-100"
+      placeholder="Click to add comment"
+      name="comment"
+    />
+    <input type="hidden" name="blog_id" value={{blog.blog_id}} />
+    <input type="hidden" name="email_id" value={{email}} />
+    <input type="hidden" name="username" value={{username}} />
+    <input
+      type="button"
+      class="d-none btn btn-outline-success mt-1"
+      onclick="createComment()"
+      value="Post Comment"
+    />
+  </form>
+  <div class="list-group list-group-flush">
+    {{#if emtCommentsList}}
+      <div class="container text-center mt-3">
+        <p>No Comments on this Blog!</p>
+      </div>
+    {{else}}
+      {{#each commentsList}}
+        <li class="list-group-item m-2">
+          <div>
+            <b>{{this.email_id}} </b>
+            <div class="muted d-inline">{{this.date}}</div>
+            <br />
+            <div class="ps-3">{{this.comment}}</div>
+          </div>
+        </li>
+      {{/each}}
+    {{/if}}
+  </div>
 </section>

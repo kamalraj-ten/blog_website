@@ -641,6 +641,21 @@ const getMultipleBlogLikeCount = async (blog_ids) => {
   }
 };
 
+const deleteBlog = async (blog_id) => {
+  try {
+    //deleting referencing rows
+    // comments
+    await client.query("DELETE FROM comments WHERE blog_id = $1", [blog_id]);
+    await client.query("DELETE FROM blogviews WHERE blog_id = $1", [blog_id]);
+    await client.query("DELETE FROM bloglikes WHERE blog_id = $1", [blog_id]);
+    await client.query("DELETE FROM blogs WHERE blog_id = $1", [blog_id]);
+    return true;
+  } catch (e) {
+    console.log(e.stack);
+    return false;
+  }
+};
+
 module.exports = {
   checkUser,
   getUserDetail,
@@ -677,5 +692,6 @@ module.exports = {
   getPrivateBlog,
   updateBlogByID,
   getMultipleBlogLikeCount,
+  deleteBlog,
   categories,
 };
