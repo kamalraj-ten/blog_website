@@ -139,7 +139,7 @@ app.get("/blogHome/", async (req, res) => {
     res.clearCookie("errorEditingBlog");
   }
   if (req.cookies["deletedBlog"]) {
-    data["display_message"] = "Delete the blog";
+    data["display_message"] = "Deleted the blog";
     data["display_bootstrap_class"] += "success";
     res.clearCookie("deletedBlog");
   }
