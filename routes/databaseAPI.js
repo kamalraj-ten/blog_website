@@ -59,13 +59,21 @@ router.post("/sign_up/", async (req, res) => {
     interestVector,
     password
   );
-  if (response["success"])
+  if (response["success"]){
     res.cookie("createUser", true, {
       httpOnly: true,
       secure: true,
       sameSite: true,
     });
-  res.redirect("/login");
+    res.send(JSON.stringify(true))
+  }else{
+    res.cookie("createUser", false, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
+    res.send(JSON.stringify(false))
+  }
 });
 
 router.post("/blog", async (req, res) => {
@@ -229,11 +237,6 @@ router.get("/user_search/:text/", async (req, res) => {
 router.get("/blog_search/:text/", async (req, res) => {
   const result = await Database.searchForBlog(req.params.text);
   res.json({ data: result });
-});
-
-router.get("/", (req, res) => {
-  console.log("came in");
-  res.end();
 });
 
 module.exports = router;

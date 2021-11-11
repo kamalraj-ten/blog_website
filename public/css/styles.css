@@ -19,8 +19,8 @@
   }
 }
 
-body {
-  background: linear-gradient(-45deg, #ffffff, #a9a9a9, #fff, #c0c0c0);
-  background-size: 300% 300%;
-  animation: gradient 8s ease infinite;
+body{
+  background-image: url(../icons/bg.jpg);
+  background-repeat: repeat;
+  background-size: auto;
 }

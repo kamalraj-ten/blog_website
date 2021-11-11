@@ -192,12 +192,12 @@ app.get("/user_suggestions/", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  var attr = { layout: "no_nav_main" };
-  if (req.cookies["createdUser"]) {
-    res.clearCookie("createUser");
-    attr["createdUser"] = true;
+  var attr = { layout: "no_nav_main" }
+  if (req.cookies["createUser"]) {
+    res.clearCookie("createUser")
+    attr["createdUser"] = true
   }
-  res.render("login", attr);
+  res.render("login", attr)
 });
 
 app.get("/sign_up/", (req, res) =>

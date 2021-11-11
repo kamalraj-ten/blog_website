@@ -1,4 +1,4 @@
-function rdsignup() {
+async function rdsignup() {
   var letter = /^[A-Za-z]+$/;
   var Name = document.getElementById("signupname");
   var Username = document.getElementById("signupusername");
@@ -50,7 +50,7 @@ function rdsignup() {
       password: pswd.value,
     };
     // signup
-    fetch("/database/sign_up", {
+    await fetch("/database/sign_up", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -58,20 +58,12 @@ function rdsignup() {
       },
       body: JSON.stringify(body),
     })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        if (json.success) {
-          window.location.href = "/login";
-        } else {
-          if (json.error !== "") alert(json.error);
-          else alert(json.credentialError);
-        }
-      });
+
+    window.location.href = '/login'
   }
 }
 
-var interests = [];
+let interests = [];
 function selectInterest(event) {
   const srcText = event.srcElement.firstChild.data;
   if (event.srcElement.id == "interests") return;

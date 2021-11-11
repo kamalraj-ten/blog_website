@@ -4,7 +4,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
     <script src="../scripts/bootstrap.min.js"></script>
     <script src="../scripts/userpage.js"></script>
     <script
@@ -15,7 +14,7 @@
     ></script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Blog Website</a>
         <button
@@ -52,7 +51,7 @@
                 href="/user/{{email}}"
               >My profile</a></li>
           </ul>
-          <div class="nav-item link-dark btn border-0" onclick="logout()">
+          <div class="nav-item link-light btn border-0" onclick="logout()">
             Logout
           </div>
         </div>
@@ -65,7 +64,7 @@
             id="search-text"
           />
           <button
-            class="btn btn-outline-success"
+            class="btn btn-success"
             type="button"
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
