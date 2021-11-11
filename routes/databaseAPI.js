@@ -93,14 +93,17 @@ router.post('/blog',async (req,res)=>{
     if(typeof(data["category"]) == 'string'){
       data["category"] = [data["category"]]
     }
-    data["category"].sort()
+    data["category"] = data["category"].sort()
+    categories.sort()
     var i = 0
     var j = 0
     for (; i < categories.length; ++i) {
       if (categories[i] === data["category"][j]) {
         blog.categoryVector += 1
-        ++j
+        //console.log(data["category"][j],categories[i], blog.categoryVector, i , j)
+        j = j+1
       } else blog.categoryVector += 0
+      //console.log(data["category"][j-1],categories[i], blog.categoryVector, i , j-1)
     }
   }
   let flag = await Database.createBlog(blog.title,blog.visibility,blog.content,blog.categoryVector,blog.email_id,blog.subject)
@@ -159,6 +162,7 @@ router.post('/blog_edit/:id',async (req,res)=>{
       data["category"] = [data["category"]]
     }
     data["category"].sort()
+    categories.sort()
     var j = 0
     for (var i = 0; i < categories.length; ++i) {
       if (categories[i] === data["category"][j]) {
