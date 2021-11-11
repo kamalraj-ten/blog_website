@@ -1,35 +1,95 @@
-<link rel="stylesheet" href="../css/signup.css">
+<link rel="stylesheet" href="../css/signup.css" />
 <script src="../scripts/signup.js"></script>
 <h1> SIGN UP </h1>
 <div class="userdetl container">
-  <form action="/database/sign_up" method="post">
-    <div class="form-group">
-      <input class="form-control" type="text" placeholder="Full name" name="name" id="signupname"  required>
+  <form class="mb-3" action="/database/sign_up" method="post">
+    <div class="form-group mb-2">
+      <label for="name">Name</label>
+      <input
+        class="form-control"
+        type="text"
+        placeholder="new_user"
+        name="name"
+        id="signupname"
+        required
+      />
     </div>
-    <div class="form-group">
-      <input class="form-control" type="text" placeholder="Username" name="username" id="signupusername" required>
+    <div class="form-group mb-2">
+      <label for="username">Username</label>
+      <input
+        class="form-control"
+        type="text"
+        placeholder="new_user_123"
+        name="username"
+        id="signupusername"
+        required
+      />
     </div>
-    <div class="form-group">
-      <input class="form-control" type="text" placeholder="Email id" name="email_id" id="signupmail" required>
+    <div class="form-group mb-2">
+      <label for="email_id">Email id</label>
+      <input
+        class="form-control"
+        type="text"
+        placeholder="new_user@email.com"
+        name="email_id"
+        id="signupmail"
+        required
+      />
     </div>
-    <div class="form-group">
-      <select id="signupgender" name="gender" placeholder="Gender" class ="form-control" required>
-      <option value="">select</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
+    <div class="form-group mb-2">
+      <label for="gender">Gender</label>
+      <select
+        id="signupgender"
+        name="gender"
+        placeholder="Gender"
+        class="form-control"
+        required
+      >
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
       </select>
     </div>
-    <div class="form-group">
-      <input type="text" placeholder="Country" name="country" class="form-control" id="signupcntry" required>
+    <div class="form-group mb-2">
+      <label for="country">Country</label>
+      <input
+        type="text"
+        placeholder="India"
+        name="country"
+        class="form-control"
+        id="signupcntry"
+        required
+      />
     </div>
-    <div class="form-group">
-      <input type="date" placeholder="DOB" name="dob" id="signupdob" class="form-control" required>
+    <div class="form-group mb-2">
+      <label for="dob">DOB</label>
+      <input
+        type="date"
+        placeholder="DOB"
+        name="dob"
+        id="signupdob"
+        class="form-control"
+        required
+      />
     </div>
-    <div class="form-group">
-      <input type="password" placeholder="Password" name="pwd" id="signuppswd" class="form-control" required>
+    <div class="form-group mb-2">
+      <label for="pwd">Password</label>
+      <input
+        type="password"
+        name="pwd"
+        id="signuppswd"
+        class="form-control"
+        required
+      />
     </div>
-    <div class="form-group">
-      <input type="password" placeholder="Confirm password" name="confirm_pwd" id="signupcpswd" class="form-control" required>
+    <div class="form-group mb-2">
+      <label for="confirm_pwd">Confirm password</label>
+      <input
+        type="password"
+        name="confirm_pwd"
+        id="signupcpswd"
+        class="form-control"
+        required
+      />
     </div>
     <h2>Field of Interest </h2>
     <div id="interests" class="flexb" onclick="selectInterest(event)">
@@ -55,8 +115,20 @@
       <div>World News</div>
     </div>
     <div class="clibut form-group">
-      <input type="button" value="Sign up" class="signupbutton button form-control" id="signupbtn" name="signing_up" onClick="rdsignup()">
+      <input
+        type="button"
+        value="Sign up"
+        class="signupbutton button form-control"
+        id="signupbtn"
+        name="signing_up"
+        onClick="rdsignup()"
+      />
     </div>
   </form>
-  <input type="button" class="cancelbutton button" onClick="window.location.href = '/login'" value="Cancel">
+  <input
+    type="button"
+    class="cancelbutton button"
+    onClick="window.location.href = '/login'"
+    value="Cancel"
+  />
 </div>
