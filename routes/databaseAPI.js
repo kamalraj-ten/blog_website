@@ -99,14 +99,17 @@ router.post("/blog", async (req, res) => {
     if (typeof data["category"] == "string") {
       data["category"] = [data["category"]];
     }
-    data["category"].sort();
+    data["category"] = data["category"].sort();
+    categories.sort();
     var i = 0;
     var j = 0;
     for (; i < categories.length; ++i) {
       if (categories[i] === data["category"][j]) {
         blog.categoryVector += 1;
-        ++j;
+        //console.log(data["category"][j],categories[i], blog.categoryVector, i , j)
+        j = j + 1;
       } else blog.categoryVector += 0;
+      //console.log(data["category"][j-1],categories[i], blog.categoryVector, i , j-1)
     }
   }
   let flag = await Database.createBlog(
@@ -117,12 +120,23 @@ router.post("/blog", async (req, res) => {
     blog.email_id,
     blog.subject
   );
-  res.send(JSON.stringify(flag));
+  //res.send(JSON.stringify(flag));
   if (flag == true) {
     //alert user that blog is created (use modal to show message), then redirect to main page
+    res.cookie("createdBlog", true, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   } else {
     //alert user that blog is not created (use modal to show message), then redirect to main page
+    res.cookie("errorCreatingBlog", false, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   }
+  res.redirect("/blogHome");
 });
 
 router.post("/blog_edit/:id", async (req, res) => {
@@ -171,6 +185,7 @@ router.post("/blog_edit/:id", async (req, res) => {
       data["category"] = [data["category"]];
     }
     data["category"].sort();
+    categories.sort();
     var j = 0;
     for (var i = 0; i < categories.length; ++i) {
       if (categories[i] === data["category"][j]) {
@@ -187,12 +202,23 @@ router.post("/blog_edit/:id", async (req, res) => {
     blog.visibility,
     blog.categoryVector
   );
-  res.send(JSON.stringify(flag));
+  //res.send(JSON.stringify(flag));
   if (flag == true) {
     //alert user that blog is created (use modal to show message), then redirect to main page
+    res.cookie("editedBlog", true, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   } else {
     //alert user that blog is not created (use modal to show message), then redirect to main page
+    res.cookie("errorEditingBlog", false, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   }
+  res.redirect("/blogHome");
 });
 
 router.get("/user_search/:text/", async (req, res) => {

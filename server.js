@@ -104,14 +104,47 @@ app.get("/blogHome/", async (req, res) => {
       });
     }
   }
-  res.render("suggestion_page", {
+
+  var data = {
     suggestion_title: "Blog Home",
     username: user.username,
     home: "active",
     hint: "Blogs you might like, based on your activity",
     email: user.email_id,
     suggestions,
-  });
+    display_bootstrap_class: "rounded-pill text-center p-2 bg-",
+  };
+
+  if (req.cookies["createdBlog"]) {
+    data["display_message"] = "Created the blog successfully";
+    data["display_bootstrap_class"] += "success";
+    res.clearCookie("createdBlog");
+    console.log("createdBlog");
+  }
+  if (req.cookies["errorCreatingBlog"]) {
+    data["display_message"] = "Error Creating the blog";
+    data["display_bootstrap_class"] += "danger";
+    res.clearCookie("errorCreatingBlog");
+    console.log("errorCreatingBlog");
+  }
+  if (req.cookies["editedBlog"]) {
+    data["display_message"] = "Successfully edited the blog";
+    data["display_bootstrap_class"] += "success";
+    res.clearCookie("editedBlog");
+    console.log("editedBlog");
+  }
+  if (req.cookies["errorEditingBlog"]) {
+    data["display_message"] = "Error edited the blog";
+    data["display_bootstrap_class"] += "danger";
+    res.clearCookie("errorEditingBlog");
+  }
+  if (req.cookies["deletedBlog"]) {
+    data["display_message"] = "Delete the blog";
+    data["display_bootstrap_class"] += "success";
+    res.clearCookie("deletedBlog");
+  }
+  data["display_bootstrap_class"] = '"' + data["display_bootstrap_class"] + '"';
+  res.render("suggestion_page", data);
 });
 
 app.get("/create_blog", async (req, res) => {

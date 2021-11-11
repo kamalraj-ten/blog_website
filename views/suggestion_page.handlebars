@@ -1,5 +1,10 @@
 <title>{{suggestion_title}}</title>
 <div class="container">
+  {{#if display_message}}
+    <div class="container mb-4 mt-3 h3 text-light rounded-pill">
+      <div class={{{display_bootstrap_class}}}>{{display_message}}</div>
+    </div>
+  {{/if}}
   <h4 class="mt-3">{{hint}}</h4>
   <div class="row row-cols-3">
     {{#each suggestions}}

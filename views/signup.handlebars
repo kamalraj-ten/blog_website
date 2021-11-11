@@ -92,27 +92,27 @@
       />
     </div>
     <h2>Field of Interest </h2>
-    <div id="interests" class="flexb" onclick="selectInterest(event)">
-      <div>Brands</div>
-      <div>C</div>
-      <div>C++</div>
-      <div>Countries</div>
-      <div>Entertainment</div>
-      <div>Flutter</div>
-      <div>Government</div>
-      <div>Movies</div>
-      <div>Law</div>
-      <div>Locations</div>
-      <div>Lifestyle</div>
-      <div>Medicine</div>
-      <div>Memes</div>
-      <div>Music</div>
-      <div>Politics</div>
-      <div>Social services</div>
-      <div>Sports</div>
-      <div>Technology</div>
-      <div>Travel</div>
-      <div>World News</div>
+    <div id="interests" class="flexb container row row-cols-4 mt-2" onclick="selectInterest(event)">
+      <div class="btn btn-outline-success m-3">Brands</div>
+      <div class="btn btn-outline-success m-3">C</div>
+      <div class="btn btn-outline-success m-3">C++</div>
+      <div class="btn btn-outline-success m-3">Countries</div>
+      <div class="btn btn-outline-success m-3">Entertainment</div>
+      <div class="btn btn-outline-success m-3">Flutter</div>
+      <div class="btn btn-outline-success m-3">Government</div>
+      <div class="btn btn-outline-success m-3">Movies</div>
+      <div class="btn btn-outline-success m-3">Law</div>
+      <div class="btn btn-outline-success m-3">Locations</div>
+      <div class="btn btn-outline-success m-3">Lifestyle</div>
+      <div class="btn btn-outline-success m-3">Medicine</div>
+      <div class="btn btn-outline-success m-3">Memes</div>
+      <div class="btn btn-outline-success m-3">Music</div>
+      <div class="btn btn-outline-success m-3">Politics</div>
+      <div class="btn btn-outline-success m-3">Social services</div>
+      <div class="btn btn-outline-success m-3">Sports</div>
+      <div class="btn btn-outline-success m-3">Technology</div>
+      <div class="btn btn-outline-success m-3">Travel</div>
+      <div class="btn btn-outline-success m-3">World News</div>
     </div>
     <div class="clibut form-group">
       <input
@@ -124,11 +124,13 @@
         onClick="rdsignup()"
       />
     </div>
+    <div class="clibut form-group">
+      <input
+        type="button"
+        class="button form-control"
+        onClick="window.location.href = '/login'"
+        value="Cancel"
+      />
+    </div>
   </form>
-  <input
-    type="button"
-    class="cancelbutton button"
-    onClick="window.location.href = '/login'"
-    value="Cancel"
-  />
 </div>
