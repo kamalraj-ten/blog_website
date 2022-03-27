@@ -5,6 +5,8 @@ The website uses the html,css,bootstap and handlebar tools for front end part an
 It includes features like create/edit/delete the blogs, view follow count and blog history for the bloggers.
 For the users, they have the ability to view/like/comment a blog, follow the blogger and see their day to day tracking.
 
+Blog website link: https://simple-blog-app-1.herokuapp.com/sign_up
+
 <h3>File Organization</h3>
 
 &emsp;root<br>
